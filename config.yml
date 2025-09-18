@@ -1,0 +1,49 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    config.yml                                         :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/09/17 07:48:11 by lnaidu            #+#    #+#              #
+#    Updated: 2025/09/18 06:02:00 by lnaidu           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+programs:
+  nginx:
+    # cmd as scalar (shell-like)
+    cmd: "/usr/bin/nginx -g 'daemon off;'"
+    numprocs: 1
+    autostart: true
+    autorestart: unexpected
+    exitcodes: [0, 2]
+    startretries: 3
+    starttime: 5
+    stopsignal: TERM
+    stoptime: 10
+    stdout: "/tmp/nginx.stdout"
+    stderr: "/tmp/nginx.stderr"
+    workingdir: "/tmp"
+    umask: "022"                # écrit en string pour conserver l'octal
+    env:
+      STARTED_BY: "taskmaster"
+      ANSWER: "42"
+
+  worker:
+    # alternative: give arguments as a sequence to avoid quoting issues
+    args: ["/bin/sleep", "20"]
+    numprocs: 2
+    autostart: true
+    autorestart: always
+    exitcodes: [0]
+    startretries: 2
+    starttime: 2
+    stopsignal: INT
+    stoptime: 5
+    stdout: "/tmp/worker.stdout"
+    stderr: "/tmp/worker.stderr"
+    workingdir: "/tmp"
+    umask: "077"
+    env:
+      MODE: "debug"

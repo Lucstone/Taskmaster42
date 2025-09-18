@@ -6,13 +6,13 @@
 #    By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/16 09:52:08 by lnaidu            #+#    #+#              #
-#    Updated: 2025/09/16 10:02:22 by lnaidu           ###   ########.fr        #
+#    Updated: 2025/09/17 04:49:17 by lnaidu           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = taskmaster
 
-CC = c++
+CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror
 SCRS = 
 
@@ -24,11 +24,13 @@ DEFAULT = \033[0m
 
 OBJS =${SCRS:.cpp=.o}
 
+LIBS = -lyaml-cpp -lpthread
+
 .cpp.o:
 	@${CC} ${CXXFLAGS} -c $< -o $@
 
 $(NAME): $(OBJS)
-	@$(CC) $(CXXFLAGS) $(OBJS) -o $(NAME)
+	@$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME) $(LIBS)
 	@echo "$(GREEN) Computing all files !$(DEFAULT)" 
 
 all : $(NAME)
@@ -38,9 +40,9 @@ clean :
 	@echo "$(YELLOW)Deleting all files !$(DEFAULT)" 
 
 fclean : clean
-	@rm -f ./taskmaster
+	@rm -f $(NAME)
 	@echo "$(RED) Cleeaning all files !$(DEFAULT)" 
 
 re : fclean all
 
-./PHONY : all clean fclean re 
+.PHONY : all clean fclean re 
