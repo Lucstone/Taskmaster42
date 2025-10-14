@@ -6,7 +6,7 @@
 #    By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/16 09:52:08 by lnaidu            #+#    #+#              #
-#    Updated: 2025/09/17 04:49:17 by lnaidu           ###   ########.fr        #
+#    Updated: 2025/10/14 06:37:50 by lnaidu           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = taskmaster
 
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror
-SCRS = 
+SCRS = $(wildcard ./src/*.cpp)
 
 #COLORS
 RED = \033[1;31m
