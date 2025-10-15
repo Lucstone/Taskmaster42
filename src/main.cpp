@@ -1,4 +1,4 @@
-/* ************************************************************************** */
+/******************************************************************************/
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
@@ -6,15 +6,11 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 06:36:30 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/10/14 06:36:34 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/10/15 11:10:46 by lnaidu           ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
+/******************************************************************************/
 
-#include <iostream>
-#include <unistd.h>     // fork, execvp, getpid
-#include <sys/types.h>  // pid_t
-#include <sys/wait.h>   // waitpid
-#include <cstdlib>      // EXIT_SUCCESS / EXIT_FAILURE
+#include "../include/ProcessManager.hpp"
 
 int main() {
     std::cout << "Taskmaster started\n";
