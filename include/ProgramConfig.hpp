@@ -6,7 +6,7 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 06:36:06 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/10/17 07:50:02 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/10/17 08:16:37 by lnaidu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,10 @@ class ProgramConfig {
         int                                 _stoptime;
 
     public :
-        ProgramConfig() = default;
+        ProgramConfig();
+        ~ProgramConfig();
+        std::string getName(void) const;
+        
+        
         
 };
