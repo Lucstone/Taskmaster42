@@ -6,14 +6,14 @@
 #    By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/16 09:52:08 by lnaidu            #+#    #+#              #
-#    Updated: 2025/10/15 09:04:18 by lnaidu           ###   ########.fr        #
+#    Updated: 2025/11/04 03:00:48 by lnaidu           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = taskmaster
 
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++17
+CXXFLAGS = -Wall -Wextra -Werror -std=c++17 -Iinclude
 SCRS = $(wildcard ./src/*.cpp)
 
 #COLORS
@@ -35,8 +35,11 @@ $(NAME): $(OBJS)
 
 all : $(NAME)
 
-test_exec : test/test_exec.cpp
-	$(CXX) $(CXXFLAGS) test/test_exec.cpp -o test_exec
+test_exec : test/test_exec.cpp src/ProgramConfig.cpp
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LIBS)
+
+run_test : test_exec
+	./test_exec
 
 clean :
 	@rm -f $(OBJS)
