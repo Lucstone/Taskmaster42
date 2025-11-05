@@ -55,10 +55,10 @@ class ProgramConfig {
         const std::vector<int>  &getExitcodes()  const;
         const std::map<std::string,std::string> &getEnv()    const;
         bool    getAutostart()   const;
-        int getNumprocs()    const;
-        int getStartretries()const;
-        int getStarttime()   const;
-        int getStoptime()    const;
+        int     getNumprocs()    const;
+        int     getStartretries()const;
+        int     getStarttime()   const;
+        int     getStoptime()    const;
         void    setName(const std::string& src);
         void    setCmd(const std::string& src);
         void    setUmask(const std::string& src);
