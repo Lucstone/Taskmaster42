@@ -1,18 +1,25 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    config.yaml                                        :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/09/17 07:48:11 by lnaidu            #+#    #+#              #
-#    Updated: 2025/11/05 07:51:55 by lnaidu           ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 programs:
-  nginx:
-    cmd: "/usr/local/bin/nginx -c /etc/nginx/test.conf"
+  cat_demo:
+    cmd: "/bin/cat"
+    numprocs: 1
+    umask: 022
+    workingdir: /tmp
+    autostart: false
+    autorestart: unexpected
+    exitcodes:
+      - 0
+    startretries: 2
+    starttime: 2
+    stopsignal: TERM
+    stoptime: 5
+    stdout: /tmp/cat_demo.stdout
+    stderr: /tmp/cat_demo.stderr
+    env:
+      STARTED_BY: taskmaster
+      MODE: demo
+
+  sleep_test:
+    cmd: "/bin/sleep 10"
     numprocs: 1
     umask: 077
     workingdir: /tmp
@@ -20,28 +27,12 @@ programs:
     autorestart: unexpected
     exitcodes:
       - 0
-      - 2
     startretries: 3
-    starttime: 5
+    starttime: 3
     stopsignal: TERM
-    stoptime: 10
-    stdout: /tmp/nginx.stdout
-    stderr: /tmp/nginx.stderr
+    stoptime: 5
+    stdout: /tmp/sleep_test.stdout
+    stderr: /tmp/sleep_test.stderr
     env:
       STARTED_BY: taskmaster
-      ANSWER: 42
-
-  vogsphere:
-    cmd: "/usr/local/bin/vogsphere-worker --no-prefork"
-    numprocs: 8
-    umask: 077
-    workingdir: /tmp
-    autostart: true
-    autorestart: unexpected
-    exitcodes: 0
-    startretries: 3
-    starttime: 5
-    stopsignal: USR1
-    stoptime: 10
-    stdout: /tmp/vgsworker.stdout
-    stderr: /tmp/vgsworker.stderr
+      TYPE: background

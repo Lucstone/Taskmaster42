@@ -24,7 +24,7 @@ DEFAULT = \033[0m
 
 OBJS =${SCRS:.cpp=.o}
 
-LIBS = -lyaml-cpp -lpthread
+LIBS = -lyaml-cpp -lpthread -lreadline
 
 .cpp.o:
 	@${CXX} ${CXXFLAGS} -c $< -o $@
