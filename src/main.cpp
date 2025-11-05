@@ -13,13 +13,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <sstream>
 #include <readline/readline.h>
 #include <readline/history.h>
+
 #include "Help.hpp"
 #include "ProcessManager.hpp"
-
-#include <unistd.h>
 
 // === Liste des commandes supportées ===
 const std::vector<std::string> COMMANDS = {
@@ -43,41 +41,68 @@ char* command_generator(const char* text, int state) {
     return nullptr;
 }
 
+// Placeholder pour la complétion
+
 char** completer(const char* text, int start, int end) {
     (void)start;
     (void)end;
     return rl_completion_matches(text, command_generator);
 }
 
-// === Helpers ===
+
+// Split simple par espaces
 std::vector<std::string> split(const std::string& line) {
-    std::istringstream iss(line);
-    std::vector<std::string> tokens;
-    std::string token;
-    while (iss >> token) tokens.push_back(token);
-    return tokens;
+    std::vector<std::string> args;
+    std::string cur;
+    for (char c : line) {
+        if (std::isspace(c)) {
+            if (!cur.empty()) { args.push_back(cur); cur.clear(); }
+        } else {
+            cur.push_back(c);
+        }
+    }
+    if (!cur.empty()) args.push_back(cur);
+    return args;
 }
 
-void handle_status()   { std::cout << "[STATUS] Displaying all jobs...\n"; }
-void handle_start(const std::string& prog)   { std::cout << "[START] Launching " << prog << "...\n"; }
-void handle_stop(const std::string& prog)    { std::cout << "[STOP] Stopping " << prog << "...\n"; }
-void handle_restart(const std::string& prog) { std::cout << "[RESTART] Restarting " << prog << "...\n"; }
-void handle_reload()   { std::cout << "[RELOAD] Reloading configuration...\n"; }
-void handle_quit()     { std::cout << "[QUIT] Shutting down Taskmaster.\n"; }
+// Handlers
+void handle_status(ProcessManager& pm) {
+    pm.printStatus();
+}
 
-// === Main Loop ===
-int main() {
-    Help            helpManager;
-    ProcessManager  pm;
+void handle_start(ProcessManager& pm, const std::string& name) {
+    pm.startProgram(name);
+}
 
-    rl_catch_signals = 0;
-    rl_attempted_completion_function = completer;
-    
+void handle_stop(ProcessManager& pm, const std::string& name) {
+    pm.stopProgram(name);
+}
+
+void handle_restart(ProcessManager& pm, const std::string& name) {
+    pm.restartProgram(name);
+}
+
+void handle_reload(ProcessManager& pm) {
+    std::cout << "Reloading configuration...\n";
     pm.loadConfig("config.yaml");
+    pm.startAutostartPrograms();
+}
+
+// ====================== MAIN =========================
+int main() {
+    rl_catch_signals = 0; // gestion manuelle des signaux
+    rl_attempted_completion_function = completer;
+
+    Help helpManager;
+    ProcessManager pm;
+
+    // Chargement initial de la configuration
+    pm.loadConfig("config.yaml");
+    pm.startAutostartPrograms();
 
     while (true) {
         char* input = readline("taskmaster> ");
-        if (!input) break;
+        if (!input) break; // Ctrl+D
 
         std::string line(input);
         free(input);
@@ -90,23 +115,19 @@ int main() {
         const std::string& cmd = args[0];
 
         try {
-            if (cmd == "status") handle_status();
-            else if (cmd == "start" && args.size() > 1) handle_start(args[1]);
-            else if (cmd == "stop" && args.size() > 1) handle_stop(args[1]);
-            else if (cmd == "restart" && args.size() > 1) handle_restart(args[1]);
-            else if (cmd == "reload") {
-                std::cout << "Reloading configuration...\n";
-                pm.loadConfig("config.yaml");
-            }
-            else if (cmd == "quit") { handle_quit(); break; }
+            if (cmd == "status") handle_status(pm);
+            else if (cmd == "start" && args.size() > 1) handle_start(pm, args[1]);
+            else if (cmd == "stop" && args.size() > 1) handle_stop(pm, args[1]);
+            else if (cmd == "restart" && args.size() > 1) handle_restart(pm, args[1]);
+            else if (cmd == "reload") handle_reload(pm);
+            else if (cmd == "quit") break;
             else if (cmd == "help") helpManager.handle(args);
-            else {
-                std::cout << "*** Unknown syntax: " << cmd << "\n";
-            }
+            else std::cout << "*** Unknown syntax: " << cmd << "\n";
         } catch (const std::exception& e) {
             std::cerr << "Error: " << e.what() << "\n";
         }
     }
 
+    std::cout << "Exiting Taskmaster shell.\n";
     return 0;
 }
