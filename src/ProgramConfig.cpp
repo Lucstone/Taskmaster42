@@ -6,7 +6,7 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 06:36:16 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/11/04 06:23:34 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/11/04 07:29:58 by lnaidu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,7 +282,7 @@ ProgramConfig ProgramConfig::fromYAML(const std::string& name, const YAML::Node&
 }
 
 bool NodeIsMap(const YAML::Node& node) {
-    return node || node.Type() == YAML::NodeType::Map;
+    return node && node.Type() == YAML::NodeType::Map;
 }
 
 std::map<std::string, ProgramConfig> ProgramConfig::loadAll(const std::string& path)
@@ -292,6 +292,7 @@ std::map<std::string, ProgramConfig> ProgramConfig::loadAll(const std::string& p
 
     if (!NodeIsMap(node))
         throw ProgramConfig::InvalidException();
+    
     for (std::pair<YAML::Node, YAML::Node> it : node["programs"]) 
     {
         std::string name = it.first.as<std::string>();

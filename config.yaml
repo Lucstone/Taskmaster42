@@ -6,42 +6,25 @@
 #    By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/17 07:48:11 by lnaidu            #+#    #+#              #
-#    Updated: 2025/11/04 03:56:32 by lnaidu           ###   ########.fr        #
+#    Updated: 2025/11/05 06:30:09 by lnaidu           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 programs:
-  nginx:
-    cmd: "/usr/local/bin/nginx -c /etc/nginx/test.conf"
+  hello:
+    cmd: "/bin/echo hello-from-taskmaster"
     numprocs: 1
-    umask: 022
-    workingdir: /tmp
-    autostart: true
-    autorestart: unexpected
-    exitcodes:
-      - 0
-      - 2
-    startretries: 3
-    starttime: 5
-    stopsignal: TERM
-    stoptime: 10
-    stdout: /tmp/nginx.stdout
-    stderr: /tmp/nginx.stderr
-    env:
-      STARTED_BY: taskmaster
-      ANSWER: 42
-
-  vogsphere:
-    cmd: "/usr/local/bin/vogsphere-worker --no-prefork"
-    numprocs: 8
-    umask: 077
-    workingdir: /tmp
     autostart: true
     autorestart: unexpected
     exitcodes: 0
-    startretries: 3
-    starttime: 5
-    stopsignal: USR1
-    stoptime: 10
-    stdout: /tmp/vgsworker.stdout
-    stderr: /tmp/vgsworker.stderr
+    stdout: /tmp/hello.stdout
+    stderr: /tmp/hello.stderr
+
+  sleeper:
+    cmd: "/bin/sleep 10"
+    numprocs: 2
+    autostart: true
+    autorestart: unexpected
+    exitcodes: 0
+    stdout: /tmp/sleeper.stdout
+    stderr: /tmp/sleeper.stderr
