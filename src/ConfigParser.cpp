@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/ProgramConfig.hpp"
+#include "ConfigParser.hpp"
 
 ProgramConfig::ProgramConfig (void) : _name(""), _cmd(""), _umask("022"), _autorestart("unexpected"), _stopsignals("TERM")
 , _stdout(""), _stderr(""), _workingdir(""), _exitcodes(1, 0)
