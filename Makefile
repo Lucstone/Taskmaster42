@@ -35,7 +35,7 @@ $(NAME): $(OBJS)
 
 all : $(NAME)
 
-test_exec : test/test_exec.cpp src/ProgramConfig.cpp
+test_exec : test/test_exec.cpp src/ConfigParser.cpp
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LIBS)
 
 run_test : test_exec

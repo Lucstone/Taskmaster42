@@ -21,7 +21,7 @@
 
 
 
-class ProgramConfig {
+class ConfigParser {
     
     private :
         std::string                         _name;
@@ -41,8 +41,8 @@ class ProgramConfig {
         int                                 _stoptime;
 
     public :
-        ProgramConfig();
-        ~ProgramConfig();
+        ConfigParser();
+        ~ConfigParser();
         
         const std::string   &getName()   const;
         const std::string   &getCmd()    const;
@@ -75,8 +75,8 @@ class ProgramConfig {
         void    setStarttime(int src);
         void    setStoptime(int src);
         
-        static ProgramConfig    fromYAML(const std::string& name, const YAML::Node& node);
-        static std::map<std::string, ProgramConfig> loadAll(const std::string& path);
+        static ConfigParser    fromYAML(const std::string& name, const YAML::Node& node);
+        static std::map<std::string, ConfigParser> loadAll(const std::string& path);
         class InvalidException : public std::exception
 		{
 			public :

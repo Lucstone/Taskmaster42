@@ -9,6 +9,8 @@
 #include <vector>
 #include <string>
 #include <thread>
+#include <sstream>
+#include <iomanip>
 
 int strToOctalUmask(const std::string& u) {
     char* end = nullptr;
@@ -54,4 +56,19 @@ std::string nowString() {
     char buf[64];
     std::strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", std::localtime(&t));
     return std::string(buf);
+}
+
+std::string formatUptime(time_t seconds) {
+    if (seconds < 0) seconds = 0;
+    int h = seconds / 3600;
+    int m = (seconds % 3600) / 60;
+    int s = seconds % 60;
+
+    std::ostringstream oss;
+    if (h > 0)
+        oss << h << ":" << std::setw(2) << std::setfill('0') << m << ":" 
+            << std::setw(2) << std::setfill('0') << s;
+    else
+        oss << m << ":" << std::setw(2) << std::setfill('0') << s;
+    return oss.str();
 }

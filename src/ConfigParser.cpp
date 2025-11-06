@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ProgramConfig.cpp                                  :+:      :+:    :+:   */
+/*   ConfigParser.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,170 +12,170 @@
 
 #include "ConfigParser.hpp"
 
-ProgramConfig::ProgramConfig (void) : _name(""), _cmd(""), _umask("022"), _autorestart("unexpected"), _stopsignals("TERM")
+ConfigParser::ConfigParser (void) : _name(""), _cmd(""), _umask("022"), _autorestart("unexpected"), _stopsignals("TERM")
 , _stdout(""), _stderr(""), _workingdir(""), _exitcodes(1, 0)
 , _env(), _autostart(false), _numprocs(1), _startretries(3), _starttime(5), _stoptime(10)
 {
-    //std::cout << "ProgramConfig Constructor is called" << std::endl;
+    //std::cout << "ConfigParser Constructor is called" << std::endl;
     return;
 }
 
-ProgramConfig ::~ProgramConfig (void) {
-    //std::cout << "ProgramConfig Destructor is called" << std::endl;
+ConfigParser ::~ConfigParser (void) {
+    //std::cout << "ConfigParser Destructor is called" << std::endl;
     return;
 }
 
-const std::string& ProgramConfig::getName() const 
+const std::string& ConfigParser::getName() const 
 { 
     return this->_name; 
 }
 
-const std::string& ProgramConfig::getCmd() const 
+const std::string& ConfigParser::getCmd() const 
 { 
     return this->_cmd; 
 }
 
-const std::string& ProgramConfig::getUmask() const 
+const std::string& ConfigParser::getUmask() const 
 { 
     return this->_umask; 
 }
 
-const std::string& ProgramConfig::getAutorestart() const 
+const std::string& ConfigParser::getAutorestart() const 
 { 
     return this->_autorestart; 
 }
 
-const std::string& ProgramConfig::getStopsignals() const 
+const std::string& ConfigParser::getStopsignals() const 
 { 
     return this->_stopsignals; 
 }
 
-const std::string& ProgramConfig::getStdoutPath() const 
+const std::string& ConfigParser::getStdoutPath() const 
 { 
     return this->_stdout; 
 }
 
-const std::string& ProgramConfig::getStderrPath() const 
+const std::string& ConfigParser::getStderrPath() const 
 { 
     return this->_stderr; 
 }
 
-const std::string& ProgramConfig::getWorkingDir() const 
+const std::string& ConfigParser::getWorkingDir() const 
 { 
     return this->_workingdir; 
 }
 
-const std::vector<int>& ProgramConfig::getExitcodes() const 
+const std::vector<int>& ConfigParser::getExitcodes() const 
 { 
     return this->_exitcodes; 
 }
 
-const std::map<std::string,std::string>& ProgramConfig::getEnv() const 
+const std::map<std::string,std::string>& ConfigParser::getEnv() const 
 { 
     return this->_env; 
 }
 
-bool ProgramConfig::getAutostart() const 
+bool ConfigParser::getAutostart() const 
 { 
     return this->_autostart; 
 }
 
-int  ProgramConfig::getNumprocs() const 
+int  ConfigParser::getNumprocs() const 
 { 
     return this->_numprocs; 
 }
 
-int  ProgramConfig::getStartretries() const 
+int  ConfigParser::getStartretries() const 
 { 
     return this->_startretries; 
 }
 
-int  ProgramConfig::getStarttime() const 
+int  ConfigParser::getStarttime() const 
 { 
     return this->_starttime; 
 }
 
-int  ProgramConfig::getStoptime() const 
+int  ConfigParser::getStoptime() const 
 { 
     return this->_stoptime; 
 }
 
-void ProgramConfig::setName(const std::string& src) 
+void ConfigParser::setName(const std::string& src) 
 {
     this->_name = src; 
 }
 
-void ProgramConfig::setCmd(const std::string& src) 
+void ConfigParser::setCmd(const std::string& src) 
 { 
     this->_cmd = src; 
 }
 
-void ProgramConfig::setUmask(const std::string& src) 
+void ConfigParser::setUmask(const std::string& src) 
 {
     this->_umask = src;
 }
 
-void ProgramConfig::setAutorestart(const std::string& src) 
+void ConfigParser::setAutorestart(const std::string& src) 
 { 
     this->_autorestart = src; 
 }
 
-void ProgramConfig::setStopsignals(const std::string& src) 
+void ConfigParser::setStopsignals(const std::string& src) 
 { 
     this->_stopsignals = src; 
 }
 
-void ProgramConfig::setStdoutPath(const std::string& src) 
+void ConfigParser::setStdoutPath(const std::string& src) 
 { 
     this->_stdout = src; 
 }
 
-void ProgramConfig::setStderrPath(const std::string& src) 
+void ConfigParser::setStderrPath(const std::string& src) 
 { 
     this->_stderr = src; 
 }
 
-void ProgramConfig::setWorkingDir(const std::string& src) 
+void ConfigParser::setWorkingDir(const std::string& src) 
 { 
     this->_workingdir = src; 
 }
 
-void ProgramConfig::setExitcodes(const std::vector<int>& src) 
+void ConfigParser::setExitcodes(const std::vector<int>& src) 
 { 
     this->_exitcodes = src; 
 }
 
-void ProgramConfig::setEnv(const std::map<std::string,std::string>& src) 
+void ConfigParser::setEnv(const std::map<std::string,std::string>& src) 
 { 
     this->_env = src; 
 }
 
-void ProgramConfig::setAutostart(bool src) 
+void ConfigParser::setAutostart(bool src) 
 { 
     this->_autostart = src; 
 }
 
-void ProgramConfig::setNumprocs(int src) 
+void ConfigParser::setNumprocs(int src) 
 { 
     this->_numprocs = src; 
 }
 
-void ProgramConfig::setStartretries(int src) 
+void ConfigParser::setStartretries(int src) 
 { 
     this->_startretries = src; 
 }
 
-void ProgramConfig::setStarttime(int src) 
+void ConfigParser::setStarttime(int src) 
 { 
     this->_starttime = src; 
 }
 
-void ProgramConfig::setStoptime(int src) 
+void ConfigParser::setStoptime(int src) 
 { 
     this->_stoptime = src; 
 }
 
-const char* ProgramConfig::InvalidException::what() const throw()
+const char* ConfigParser::InvalidException::what() const throw()
 {
 	return("Missing or invalid section in config");
 }
@@ -197,7 +197,7 @@ static std::string ToString(const YAML::Node& node)
 static std::string readCmdAsString(const YAML::Node& cmdNode)
 {
     if (!cmdNode)
-        throw ProgramConfig::InvalidException();
+        throw ConfigParser::InvalidException();
     if (cmdNode.Type() == YAML::NodeType::Scalar)
         return cmdNode.as<std::string>();
     if (cmdNode.Type() == YAML::NodeType::Sequence) 
@@ -213,17 +213,17 @@ static std::string readCmdAsString(const YAML::Node& cmdNode)
         }
         return oss.str();
     }
-    throw ProgramConfig::InvalidException();
+    throw ConfigParser::InvalidException();
 }
 
-ProgramConfig ProgramConfig::fromYAML(const std::string& name, const YAML::Node& node)
+ConfigParser ConfigParser::fromYAML(const std::string& name, const YAML::Node& node)
 {
-    ProgramConfig config;
+    ConfigParser config;
 
     config.setName(name);
 
     if (!node["cmd"])
-        throw ProgramConfig::InvalidException();
+        throw ConfigParser::InvalidException();
     config.setCmd(readCmdAsString(node["cmd"]));
     if (node["numprocs"]) 
         config.setNumprocs(node["numprocs"].as<int>());
@@ -273,11 +273,11 @@ ProgramConfig ProgramConfig::fromYAML(const std::string& name, const YAML::Node&
         config.setEnv(env);
     }
     if (config.getCmd().empty())
-        throw ProgramConfig::InvalidException();
+        throw ConfigParser::InvalidException();
     if (config.getNumprocs() <= 0)
-        throw ProgramConfig::InvalidException();
+        throw ConfigParser::InvalidException();
     if (config.getStartretries() < 0)
-        throw ProgramConfig::InvalidException();
+        throw ConfigParser::InvalidException();
     return config;
 }
 
@@ -285,18 +285,18 @@ bool NodeIsMap(const YAML::Node& node) {
     return node && node.Type() == YAML::NodeType::Map;
 }
 
-std::map<std::string, ProgramConfig> ProgramConfig::loadAll(const std::string& path)
+std::map<std::string, ConfigParser> ConfigParser::loadAll(const std::string& path)
 {
     YAML::Node node = YAML::LoadFile(path);
-    std::map<std::string, ProgramConfig> config;
+    std::map<std::string, ConfigParser> config;
 
     if (!NodeIsMap(node))
-        throw ProgramConfig::InvalidException();
+        throw ConfigParser::InvalidException();
     
     for (std::pair<YAML::Node, YAML::Node> it : node["programs"]) 
     {
         std::string name = it.first.as<std::string>();
-        config[name] = ProgramConfig::fromYAML(name, it.second);
+        config[name] = ConfigParser::fromYAML(name, it.second);
     }
     return config;
 }

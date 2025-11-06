@@ -15,11 +15,11 @@ private:
 public:
     ProcessSupervisor(ProcessLauncher* launcher) : _launcher(launcher) {}
 
-    std::vector<pid_t> startProgram(const ProgramConfig& cfg, const std::string& name);
-    void stopProgram(const ProgramConfig& cfg, const std::string& name);
-    void restartProgram(const ProgramConfig& cfg, const std::string& name);
+    std::vector<pid_t> startProgram(const ConfigParser& cfg, const std::string& name);
+    void stopProgram(const ConfigParser& cfg, const std::string& name);
+    void restartProgram(const ConfigParser& cfg, const std::string& name);
 
-    void startAutostartPrograms(const std::map<std::string, ProgramConfig>& configs);
+    void startAutostartPrograms(const std::map<std::string, ConfigParser>& configs);
     void tick();
     void handleExit(pid_t pid, int status);
     void printStatus() const;

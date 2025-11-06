@@ -83,6 +83,7 @@ int main() {
 
     pm.loadConfig("config.yaml");
     pm.startAutostartPrograms();
+    handle_status(pm);
 
     while (true) {
         char* input = readline("taskmaster> ");

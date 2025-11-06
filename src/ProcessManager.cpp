@@ -11,21 +11,25 @@
 /* ************************************************************************** */
 
 #include "ProcessManager.hpp"
+#include "Utils.hpp"
 #include <iostream>
+#include <vector>
+#include <algorithm>
 #include <iomanip>
 #include <unistd.h>
 #include <sys/wait.h>
 #include <csignal>
 #include <thread>
 #include <chrono>
+#include <ctime>
 
 // -------------------- Config --------------------
 void ProcessManager::loadConfig(const std::string& path) {
-    _configs = ProgramConfig::loadAll(path);
+    _configs = ConfigParser::loadAll(path);
 }
 
 void ProcessManager::reloadConfig(const std::string& path) {
-    auto fresh = ProgramConfig::loadAll(path);
+    auto fresh = ConfigParser::loadAll(path);
 
     for (auto it = _configs.begin(); it != _configs.end(); ++it) {
         if (!fresh.count(it->first)) {
@@ -49,7 +53,7 @@ std::vector<pid_t> ProcessManager::startProgram(const std::string& name) {
         return pids;
     }
 
-    const ProgramConfig& cfg = it->second;
+    const ConfigParser& cfg = it->second;
     int N = std::max(1, cfg.getNumprocs());
 
     for (int i = 0; i < N; ++i) {
@@ -59,7 +63,6 @@ std::vector<pid_t> ProcessManager::startProgram(const std::string& name) {
             info.markStartedNow();
             _table[name].push_back(info);
             pids.push_back(pid);
-            logEvent("start", name, pid, 0);
         } else {
             std::cerr << "[start] failed: " << name << " instance " << i << "\n";
         }
@@ -72,7 +75,7 @@ void ProcessManager::stopProgram(const std::string& name) {
     auto tit = _table.find(name);
     if (cit == _configs.end() || tit == _table.end()) return;
 
-    const ProgramConfig& cfg = cit->second;
+    const ConfigParser& cfg = cit->second;
     std::vector<ProcessInfo>& procs = tit->second;
     int sig = SIGTERM; // on peut utiliser signalFromString si nécessaire
 
@@ -149,29 +152,57 @@ void ProcessManager::handleExit(pid_t pid, int status) {
 }
 
 // -------------------- Lancement via ProcessLauncher --------------------
-pid_t ProcessManager::spawnOne(const ProgramConfig& cfg) {
+pid_t ProcessManager::spawnOne(const ConfigParser& cfg) {
     return _launcher.spawnOne(cfg); // délégation
 }
 
 // -------------------- Logs / Status --------------------
 void ProcessManager::printStatus() const {
-    std::cout << "NAME        STATE      PID       RESTARTS\n";
-    for (auto& [name, vec] : _table) {
-        if (vec.empty()) {
-            std::cout << std::left << std::setw(12) << name
-                      << std::setw(11) << "STOPPED"
-                      << std::setw(10) << "-"
-                      << "-" << "\n";
-            continue;
-        }
-        for (auto& p : vec) {
-            bool running = p.isRunning();
-            std::cout << std::left << std::setw(12) << name
-                      << std::setw(11) << (running ? "RUNNING" : "STOPPED")
-                      << std::setw(10) << (running ? std::to_string(p.getPid()) : "-")
-                      << p.getRestarts()
-                      << "\n";
-        }
+    if (_table.empty()) {
+        std::cout << "No programs loaded.\n";
+        return;
+    }
+
+    // Obtenir la taille max des noms
+    size_t maxNameLen = 0;
+    for (const auto& kv : _table)
+        maxNameLen = std::max(maxNameLen, kv.first.size());
+
+    // Largeur minimale (comme Supervisor)
+    const size_t MIN_WIDTH = 33;
+    size_t colWidth = std::max(maxNameLen, MIN_WIDTH);
+
+    // Trier les programmes par ordre ASCII
+    std::vector<std::string> names;
+    for (const auto& kv : _table) names.push_back(kv.first);
+    std::sort(names.begin(), names.end());
+
+    // Calcul du temps d'uptime
+    auto formatUptime = [](time_t startedAt) -> std::string {
+        if (startedAt == 0) return "0:00:00";
+        int diff = static_cast<int>(std::time(nullptr) - startedAt);
+        int hours = diff / 3600;
+        int mins  = (diff % 3600) / 60;
+        int secs  = diff % 60;
+        std::ostringstream oss;
+        oss << hours << ":" << std::setw(2) << std::setfill('0') << mins
+            << ":" << std::setw(2) << std::setfill('0') << secs;
+        return oss.str();
+    };
+
+    // Affichage des lignes
+    for (const std::string& name : names) {
+        const auto& processes = _table.at(name);
+        if (processes.empty()) continue;
+
+        const ProcessInfo& pinfo = processes.back();
+
+        std::cout << std::left << std::setw(colWidth)
+                  << name
+                  << (pinfo.isRunning() ? "RUNNING   " : "STOPPED   ")
+                  << "pid " << std::setw(6) << pinfo.getPid()
+                  << ", uptime " << formatUptime(pinfo.getStartedAt())
+                  << "\n";
     }
 }
 

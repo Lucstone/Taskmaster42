@@ -42,11 +42,11 @@ public:
     void logEvent(const std::string& type, const std::string& name, pid_t pid, int code);
 
 private:
-    pid_t spawnOne(const ProgramConfig& cfg);
+    pid_t spawnOne(const ConfigParser& cfg);
 
     bool findByPid(pid_t pid, std::string& nameOut, size_t& idxOut);
 
-    std::map<std::string, ProgramConfig> _configs;
+    std::map<std::string, ConfigParser> _configs;
     std::map<std::string, std::vector<ProcessInfo>> _table;
 
     ProcessLauncher _launcher; // <-- délégation de fork/exec/redirections

@@ -10,7 +10,7 @@
 #include <csignal>
 #include <cstdlib>
 
-pid_t ProcessLauncher::spawnOne(const ProgramConfig& cfg) {
+pid_t ProcessLauncher::spawnOne(const ConfigParser& cfg) {
     pid_t pid = fork();
     if (pid < 0) { std::perror("fork"); return -1; }
 

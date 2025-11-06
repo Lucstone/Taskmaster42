@@ -6,16 +6,16 @@
 
 class ConfigManager {
 private:
-    std::map<std::string, ProgramConfig> _configs;
+    std::map<std::string, ConfigParser> _configs;
 
 public:
-    const std::map<std::string, ProgramConfig>& getConfigs() const { return _configs; }
+    const std::map<std::string, ConfigParser>& getConfigs() const { return _configs; }
 
     void loadConfig(const std::string& path) {
-        _configs = ProgramConfig::loadAll(path);
+        _configs = ConfigParser::loadAll(path);
     }
 
     void reloadConfig(const std::string& path) {
-        _configs = ProgramConfig::loadAll(path);
+        _configs = ConfigParser::loadAll(path);
     }
 };

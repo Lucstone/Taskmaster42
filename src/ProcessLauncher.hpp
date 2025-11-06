@@ -5,5 +5,5 @@
 
 class ProcessLauncher {
 public:
-    pid_t spawnOne(const ProgramConfig& cfg);
+    pid_t spawnOne(const ConfigParser& cfg);
 };
