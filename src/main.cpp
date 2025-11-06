@@ -16,70 +16,56 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-#include "Help.hpp"
 #include "ProcessManager.hpp"
+#include "Helper.hpp"
 
-// === Liste des commandes supportées ===
 const std::vector<std::string> COMMANDS = {
-    "status", "start", "stop", "restart", "reload", "quit"
+    "status", "start", "stop", "restart", "reload", "quit", "help"
 };
 
-// === Fonction d'autocomplétion ===
 char* command_generator(const char* text, int state) {
-    static size_t index;
-    static size_t len;
-    if (!state) {
-        index = 0;
-        len = strlen(text);
-    }
+    static size_t index, len;
+    if (!state) { index = 0; len = strlen(text); }
     while (index < COMMANDS.size()) {
         const std::string& cmd = COMMANDS[index++];
-        if (cmd.compare(0, len, text) == 0) {
-            return strdup(cmd.c_str());
-        }
+        if (cmd.compare(0, len, text) == 0) return strdup(cmd.c_str());
     }
     return nullptr;
 }
 
-// Placeholder pour la complétion
-
 char** completer(const char* text, int start, int end) {
-    (void)start;
-    (void)end;
+    (void)start; (void)end;
     return rl_completion_matches(text, command_generator);
 }
 
-
-// Split simple par espaces
 std::vector<std::string> split(const std::string& line) {
     std::vector<std::string> args;
     std::string cur;
     for (char c : line) {
-        if (std::isspace(c)) {
-            if (!cur.empty()) { args.push_back(cur); cur.clear(); }
-        } else {
-            cur.push_back(c);
-        }
+        if (isspace(c)) { if (!cur.empty()) { args.push_back(cur); cur.clear(); } }
+        else cur.push_back(c);
     }
     if (!cur.empty()) args.push_back(cur);
     return args;
 }
 
-// Handlers
 void handle_status(ProcessManager& pm) {
     pm.printStatus();
 }
 
-void handle_start(ProcessManager& pm, const std::string& name) {
-    pm.startProgram(name);
+void handle_start(ProcessManager& pm, const std::vector<std::string>& args) {
+    for (size_t i = 1; i < args.size(); ++i)
+        pm.startProgram(args[i]);
 }
 
-void handle_stop(ProcessManager& pm, const std::string& name) {
-    pm.stopProgram(name);
+void handle_stop(ProcessManager& pm, const std::vector<std::string>& args) {
+    for (size_t i = 1; i < args.size(); ++i)
+        pm.stopProgram(args[i]);
 }
 
-void handle_restart(ProcessManager& pm, const std::string& name) {
-    pm.restartProgram(name);
+void handle_restart(ProcessManager& pm, const std::vector<std::string>& args) {
+    for (size_t i = 1; i < args.size(); ++i)
+        pm.restartProgram(args[i]);
 }
 
 void handle_reload(ProcessManager& pm) {
@@ -88,12 +74,11 @@ void handle_reload(ProcessManager& pm) {
     pm.startAutostartPrograms();
 }
 
-// ====================== MAIN =========================
 int main() {
     rl_catch_signals = 0;
     rl_attempted_completion_function = completer;
 
-    Help helpManager;
+    Helper helpManager;
     ProcessManager pm;
 
     pm.loadConfig("config.yaml");
@@ -107,17 +92,16 @@ int main() {
         free(input);
 
         if (line.empty()) continue;
-
         add_history(line.c_str());
-        auto args = split(line);
 
+        auto args = split(line);
         const std::string& cmd = args[0];
 
         try {
             if (cmd == "status") handle_status(pm);
-            else if (cmd == "start" && args.size() > 1) handle_start(pm, args[1]);
-            else if (cmd == "stop" && args.size() > 1) handle_stop(pm, args[1]);
-            else if (cmd == "restart" && args.size() > 1) handle_restart(pm, args[1]);
+            else if (cmd == "start") handle_start(pm, args);
+            else if (cmd == "stop") handle_stop(pm, args);
+            else if (cmd == "restart") handle_restart(pm, args);
             else if (cmd == "reload") handle_reload(pm);
             else if (cmd == "quit") break;
             else if (cmd == "help") helpManager.handle(args);

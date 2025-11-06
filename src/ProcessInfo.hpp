@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ProcInfo.hpp                                       :+:      :+:    :+:   */
+/*   ProcessInfo.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -16,7 +16,7 @@
 # include <string>
 # include <iostream>
 
-class ProcInfo {
+class ProcessInfo {
     private:
 
         pid_t  _pid;
@@ -26,8 +26,8 @@ class ProcInfo {
 
     public:
 
-        ProcInfo(pid_t pid = -1);
-        ~ProcInfo();
+        ProcessInfo(pid_t pid = -1);
+        ~ProcessInfo();
 
         pid_t   getPid() const;
         int     getRestarts() const;

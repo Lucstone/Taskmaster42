@@ -1,8 +1,8 @@
-#include "Help.hpp"
+#include "Helper.hpp"
 #include <iostream>
 #include <sstream>
 
-Help::Help() {
+Helper::Helper() {
     commands = {"status", "start", "stop", "restart", "reload", "quit", "help"};
 
     helpTexts = {
@@ -31,14 +31,14 @@ Help::Help() {
     };
 }
 
-bool Help::is_known_command(const std::string& cmd) const {
+bool Helper::is_known_command(const std::string& cmd) const {
     for (const auto& c : commands)
         if (c == cmd)
             return true;
     return false;
 }
 
-void Help::print_default_help() const {
+void Helper::print_default_help() const {
     std::cout << "\ndefault commands (type help <topic>):\n";
     std::cout << "=====================================\n";
 
@@ -54,7 +54,7 @@ void Help::print_default_help() const {
     std::cout << "\n";
 }
 
-void Help::print_command_help(const std::vector<std::string>& args) const {
+void Helper::print_command_help(const std::vector<std::string>& args) const {
     if (args.size() == 2) {
         const std::string& cmd = args[1];
         auto it = helpTexts.find(cmd);
@@ -74,7 +74,7 @@ void Help::print_command_help(const std::vector<std::string>& args) const {
     }
 }
 
-void Help::handle(const std::vector<std::string>& args) const {
+void Helper::handle(const std::vector<std::string>& args) const {
     if (args.size() == 1)
         print_default_help();
     else

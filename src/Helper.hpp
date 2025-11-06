@@ -3,11 +3,10 @@
 #include <vector>
 #include <unordered_map>
 
-class Help {
+class Helper {
 public:
-    Help(); // constructeur
+    Helper();
 
-    // Fonction publique appelée depuis main()
     void handle(const std::vector<std::string>& args) const;
 
 private:

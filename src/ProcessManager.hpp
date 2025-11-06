@@ -11,51 +11,43 @@
 /* ************************************************************************** */
 
 #pragma once
-#include "ProgramConfig.hpp"
-#include "ProcInfo.hpp"
-
 #include <map>
-#include <vector>
 #include <string>
+#include <vector>
+#include "ProcessInfo.hpp"
+#include "ConfigParser.hpp"
+#include "ProcessLauncher.hpp"
 
 class ProcessManager {
-private:
-    // name -> config chargée depuis config.yaml
-    std::map<std::string, ProgramConfig> _configs;
-    // name -> instances en cours
-    std::map<std::string, std::vector<ProcInfo>> _table;
-
-    // Lancement d'une instance (child setup + exec)
-    pid_t spawnOne(const ProgramConfig& cfg);
-
-    // Trouver (name, index) à partir d'un pid récolté par waitpid
-    bool findByPid(pid_t pid, std::string& nameOut, size_t& idxOut);
-
-    // Applique la politique de restart quand un process meurt
-    void handleExit(pid_t pid, int status);
-
 public:
-    ProcessManager() {}
-    ~ProcessManager() {}
+    ProcessManager() = default;
+    ~ProcessManager() = default;
 
-    // Chargement / reload de la config
+    // Config
     void loadConfig(const std::string& path);
-    void reloadConfig(const std::string& path); // simple pour commencer
+    void reloadConfig(const std::string& path);
 
-    // Commandes de base (utilisées par le shell)
+    // Gestion des processus
     std::vector<pid_t> startProgram(const std::string& name);
     void stopProgram(const std::string& name);
     void restartProgram(const std::string& name);
-
-    // Autostart
     void startAutostartPrograms();
 
-    // Surveillance non bloquante
+    // Surveillance
     void tick();
+    void handleExit(pid_t pid, int status);
 
-    // Affichage status (pratique pour tests/shell)
+    // Status / Logs
     void printStatus() const;
+    void logEvent(const std::string& type, const std::string& name, pid_t pid, int code);
 
-    // Logging (stdout pour commencer)
-    void logEvent(const std::string& type, const std::string& name, pid_t pid, int code = 0);
+private:
+    pid_t spawnOne(const ProgramConfig& cfg);
+
+    bool findByPid(pid_t pid, std::string& nameOut, size_t& idxOut);
+
+    std::map<std::string, ProgramConfig> _configs;
+    std::map<std::string, std::vector<ProcessInfo>> _table;
+
+    ProcessLauncher _launcher; // <-- délégation de fork/exec/redirections
 };
