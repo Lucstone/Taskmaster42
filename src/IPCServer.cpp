@@ -6,11 +6,11 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 04:18:37 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/11/06 04:45:20 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/11/06 09:12:14 by lnaidu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/IPCServer.hpp"
+#include "./IPCServer.hpp"
 
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -27,7 +27,7 @@ static int setNonBlocking_(int fd) {
 }
 
 IPCServer::IPCServer(const std::string& sockPath, Handler h)
-: sockPath_(sockPath), handler_(std::move(h)) {
+: sockPath_(sockPath), listenFd_(-1), handler_(std::move(h)) {
     setupSocket_();
 }
 
@@ -42,7 +42,8 @@ void IPCServer::setupSocket_() {
     listenFd_ = ::socket(AF_UNIX, SOCK_STREAM, 0);
     if (listenFd_ < 0) throw std::runtime_error("socket() failed");
 
-    sockaddr_un addr; std::memset(&addr, 0, sizeof(addr));
+    sockaddr_un addr;
+    std::memset(&addr, 0, sizeof(addr));
     addr.sun_family = AF_UNIX;
     std::snprintf(addr.sun_path, sizeof(addr.sun_path), "%s", sockPath_.c_str());
 
