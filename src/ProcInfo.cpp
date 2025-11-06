@@ -6,7 +6,7 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 07:57:25 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/11/05 08:28:37 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/11/06 02:23:55 by lnaidu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,45 @@ void ProcInfo::setRestarts(int restarts)
 
 void ProcInfo::setStartFailures(int failure)
 {
-    this->_startFailures=failure;
+    this->_startFailures = failure;
 }
 
-void ProcInfo::setStartedAt(time_t t)
+void ProcInfo::setStartedAt(time_t time)
 {
-    this->_startedAt=t;
+    this->_startedAt = time;
+}
+
+void ProcInfo::incrementRestarts()
+{
+    _restarts++;
+}
+
+void ProcInfo::incrementStartFailures() 
+{ 
+    _startFailures++; 
+}
+
+void ProcInfo::markStartedNow() 
+{ 
+    _startedAt = std::time(nullptr);
+}
+
+void ProcInfo::markStopped() 
+{ 
+    _pid = -1;
+}
+
+bool ProcInfo::isRunning() const 
+{ 
+    return _pid > 0; 
+}
+
+bool ProcInfo::diedTooEarly(int starttime) const 
+{
+     return _startedAt != 0 && (std::time(nullptr) - _startedAt) < starttime;
+}
+
+bool ProcInfo::hasExceededRetries(int maxRetries) const 
+{
+    return _startFailures > maxRetries;
 }

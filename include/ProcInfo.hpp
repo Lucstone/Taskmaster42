@@ -6,7 +6,7 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/05 07:17:17 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/11/05 08:07:47 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/11/06 01:34:24 by lnaidu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class ProcInfo {
         void    setPid(pid_t pid);
         void    setRestarts(int restart);
         void    setStartFailures(int failure);
-        void    setStartedAt(time_t t);
+        void    setStartedAt(time_t time);
     
         void    incrementRestarts();
         void    incrementStartFailures();
