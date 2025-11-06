@@ -90,19 +90,18 @@ void handle_reload(ProcessManager& pm) {
 
 // ====================== MAIN =========================
 int main() {
-    rl_catch_signals = 0; // gestion manuelle des signaux
+    rl_catch_signals = 0;
     rl_attempted_completion_function = completer;
 
     Help helpManager;
     ProcessManager pm;
 
-    // Chargement initial de la configuration
     pm.loadConfig("config.yaml");
     pm.startAutostartPrograms();
 
     while (true) {
         char* input = readline("taskmaster> ");
-        if (!input) break; // Ctrl+D
+        if (!input) break;
 
         std::string line(input);
         free(input);
