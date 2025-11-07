@@ -6,12 +6,11 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 04:18:37 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/11/06 09:12:14 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/11/07 07:10:49 by lnaidu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./IPCServer.hpp"
-
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/stat.h>
@@ -27,7 +26,7 @@ static int setNonBlocking_(int fd) {
 }
 
 IPCServer::IPCServer(const std::string& sockPath, Handler h)
-: sockPath_(sockPath), listenFd_(-1), handler_(std::move(h)) {
+: _sockPath(sockPath), _listenFd(-1), _handler(std::move(h)) {
     setupSocket_();
 }
 
@@ -37,41 +36,41 @@ IPCServer::~IPCServer() {
 
 void IPCServer::setupSocket_() {
     // Nettoyer un socket précédent
-    ::unlink(sockPath_.c_str());
+    ::unlink(_sockPath.c_str());
 
-    listenFd_ = ::socket(AF_UNIX, SOCK_STREAM, 0);
-    if (listenFd_ < 0) throw std::runtime_error("socket() failed");
+    _listenFd = ::socket(AF_UNIX, SOCK_STREAM, 0);
+    if (_listenFd < 0) throw std::runtime_error("socket() failed");
 
     sockaddr_un addr;
     std::memset(&addr, 0, sizeof(addr));
     addr.sun_family = AF_UNIX;
-    std::snprintf(addr.sun_path, sizeof(addr.sun_path), "%s", sockPath_.c_str());
+    std::snprintf(addr.sun_path, sizeof(addr.sun_path), "%s", _sockPath.c_str());
 
-    if (::bind(listenFd_, (sockaddr*)&addr, sizeof(addr)) < 0) {
-        int e = errno; ::close(listenFd_); listenFd_ = -1;
+    if (::bind(_listenFd, (sockaddr*)&addr, sizeof(addr)) < 0) {
+        int e = errno; ::close(_listenFd); _listenFd = -1;
         throw std::runtime_error(std::string("bind() failed: ") + std::strerror(e));
     }
 
     // Restriction droits: seul l'utilisateur courant
-    ::chmod(sockPath_.c_str(), 0600);
+    ::chmod(_sockPath.c_str(), 0600);
 
-    if (::listen(listenFd_, 16) < 0) {
-        int e = errno; ::close(listenFd_); listenFd_ = -1;
+    if (::listen(_listenFd, 16) < 0) {
+        int e = errno; ::close(_listenFd); _listenFd = -1;
         throw std::runtime_error(std::string("listen() failed: ") + std::strerror(e));
     }
-    setNonBlocking_(listenFd_);
+    setNonBlocking_(_listenFd);
 }
 
 void IPCServer::cleanup_() {
-    if (listenFd_ >= 0) { ::close(listenFd_); listenFd_ = -1; }
-    if (!sockPath_.empty()) ::unlink(sockPath_.c_str());
+    if (_listenFd >= 0) { ::close(_listenFd); _listenFd = -1; }
+    if (!_sockPath.empty()) ::unlink(_sockPath.c_str());
 }
 
 void IPCServer::pollOnce() {
-    if (listenFd_ < 0) return;
+    if (_listenFd < 0) return;
 
     sockaddr_un cli; socklen_t len = sizeof(cli);
-    int fd = ::accept(listenFd_, (sockaddr*)&cli, &len);
+    int fd = ::accept(_listenFd, (sockaddr*)&cli, &len);
     if (fd < 0) {
         return; // rien à accepter (non bloquant)
     }
@@ -94,7 +93,7 @@ void IPCServer::pollOnce() {
     // Appeler le handler et renvoyer les lignes + sentinelle "."
     std::vector<std::string> out;
     try {
-        out = handler_(line);
+        out = _handler(line);
     } catch (...) {
         out = {"ERR internal handler error"};
     }

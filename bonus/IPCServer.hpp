@@ -6,7 +6,7 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 04:17:10 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/11/06 09:11:56 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/11/07 07:27:01 by lnaidu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,17 @@ public:
     ~IPCServer();
 
     // À appeler régulièrement (non bloquant) dans la boucle principale.
-    void pollOnce();
+    void                pollOnce();
 
     // Non copiable
     IPCServer(const IPCServer&) = delete;
     IPCServer& operator=(const IPCServer&) = delete;
 
 private:
-    std::string sockPath_;
-    int listenFd_;
-    Handler handler_;
+    std::string         _sockPath;
+    int                 _listenFd;
+    Handler             _handler;
 
-    void setupSocket_();
-    void cleanup_();
+    void                setupSocket_();
+    void                cleanup_();
 };
