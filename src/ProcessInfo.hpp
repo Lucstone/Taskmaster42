@@ -11,39 +11,45 @@
 /* ************************************************************************** */
 
 #pragma once
-# include <sys/types.h>
-# include <ctime>
-# include <string>
-# include <iostream>
+#include <sys/types.h>
+#include <ctime>
 
 class ProcessInfo {
-    private:
+public:
+    enum State { STOPPED, STARTING, RUNNING };
 
-        pid_t  _pid;
-        int    _restarts;
-        int    _startFailures;
-        time_t _startedAt;
+private:
+    pid_t  _pid;
+    int    _restarts;
+    int    _startFailures;
+    time_t _startedAt;
+    time_t _stoppedAt;
+    State  _state;
+    bool   _everStarted;
 
-    public:
+public:
+    ProcessInfo(pid_t pid = -1);
 
-        ProcessInfo(pid_t pid = -1);
-        ~ProcessInfo();
+    pid_t   getPid() const;
+    int     getRestarts() const;
+    int     getStartFailures() const;
+    time_t  getStartedAt() const;
+    time_t  getStoppedAt() const;
+    State   getState() const;
+    bool    everStarted() const;
 
-        pid_t   getPid() const;
-        int     getRestarts() const;
-        int     getStartFailures() const;
-        time_t  getStartedAt() const;
+    void    setPid(pid_t pid);
+    void    setRestarts(int restart);
+    void    setStartFailures(int failure);
+    void    setStartedAt(time_t t);
+    void    setStoppedAt(time_t t);
+    void    setState(State s);
 
-        void    setPid(pid_t pid);
-        void    setRestarts(int restart);
-        void    setStartFailures(int failure);
-        void    setStartedAt(time_t t);
-    
-        void    incrementRestarts();
-        void    incrementStartFailures();
-        void    markStartedNow();
-        void    markStopped();
-        bool    isRunning() const;
-        bool    diedTooEarly(int starttime) const;
-        bool    hasExceededRetries(int maxRetries) const;
+    void    markStarting();
+    void    markStartedNow();
+    void    markStopped();
+
+    bool    isRunning() const;
+    bool    diedTooEarly(int starttime) const;
+    bool    hasExceededRetries(int maxRetries) const;
 };

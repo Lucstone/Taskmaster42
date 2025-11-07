@@ -11,21 +11,39 @@
 /* ************************************************************************** */
 
 #pragma once
-#include <map>
-#include <string>
-#include <vector>
-#include "ProcessInfo.hpp"
-#include "ConfigParser.hpp"
-#include "ProcessLauncher.hpp"
 
-class ProcessManager {
+#include <string>
+#include <map>
+#include <vector>
+#include <iostream>
+
+#include "ConfigParser.hpp"
+
+class ProcessManager
+{
+private:
+    std::map<std::string, ConfigParser> _configs;
+
+public:
+    ProcessManager();
+    ProcessManager(const ProcessManager &other);
+    ProcessManager& operator=(const ProcessManager &other);
+    ~ProcessManager();
+
+    void loadConfig(const std::string &path);
+
+    void handle_status(const std::vector<std::string> &args);
+    void handle_start(const std::vector<std::string> &args);
+    void handle_stop(const std::vector<std::string> &args);
+    void handle_restart(const std::vector<std::string> &args);
+    void handle_reload();
+};
+
+
+/*class ProcessManager {
 public:
     ProcessManager() = default;
     ~ProcessManager() = default;
-
-    // Config
-    void loadConfig(const std::string& path);
-    void reloadConfig(const std::string& path);
 
     // Gestion des processus
     std::vector<pid_t> startProgram(const std::string& name);
@@ -51,3 +69,19 @@ private:
 
     ProcessLauncher _launcher; // <-- délégation de fork/exec/redirections
 };
+
+class ProcessManager {
+private:
+    std::map<std::string, ConfigParser> _configs;
+    std::map<std::string, std::vector<ProcessInfo>> _table;
+
+public:
+    void loadConfig(const std::string& path); // charge config + initialise _table + autostart
+
+    void startAutostartPrograms();
+
+    std::vector<pid_t> startProgram(const std::string& name);
+    void stopProgram(const std::string& name);
+    void restartProgram(const std::string& name);
+    void printStatus() const;
+};*/

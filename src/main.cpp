@@ -49,41 +49,15 @@ std::vector<std::string> split(const std::string& line) {
     return args;
 }
 
-void handle_status(ProcessManager& pm) {
-    pm.printStatus();
-}
-
-void handle_start(ProcessManager& pm, const std::vector<std::string>& args) {
-    for (size_t i = 1; i < args.size(); ++i)
-        pm.startProgram(args[i]);
-}
-
-void handle_stop(ProcessManager& pm, const std::vector<std::string>& args) {
-    for (size_t i = 1; i < args.size(); ++i)
-        pm.stopProgram(args[i]);
-}
-
-void handle_restart(ProcessManager& pm, const std::vector<std::string>& args) {
-    for (size_t i = 1; i < args.size(); ++i)
-        pm.restartProgram(args[i]);
-}
-
-void handle_reload(ProcessManager& pm) {
-    std::cout << "Reloading configuration...\n";
-    pm.loadConfig("config.yaml");
-    pm.startAutostartPrograms();
-}
-
 int main() {
+    Helper          hm;
+    ProcessManager  pm;
+
+    pm.loadConfig("config.yaml");
+    pm.printStatus();
+
     rl_catch_signals = 0;
     rl_attempted_completion_function = completer;
-
-    Helper helpManager;
-    ProcessManager pm;
-
-    pm.loadConfig("config.yaml");
-    pm.startAutostartPrograms();
-    handle_status(pm);
 
     while (true) {
         char* input = readline("taskmaster> ");
@@ -99,19 +73,18 @@ int main() {
         const std::string& cmd = args[0];
 
         try {
-            if (cmd == "status") handle_status(pm);
-            else if (cmd == "start") handle_start(pm, args);
-            else if (cmd == "stop") handle_stop(pm, args);
-            else if (cmd == "restart") handle_restart(pm, args);
-            else if (cmd == "reload") handle_reload(pm);
-            else if (cmd == "quit") break;
-            else if (cmd == "help") helpManager.handle(args);
+            if (cmd == "quit") break;
+            else if (cmd == "help") hm.handle(args);
+            else if (cmd == "status") pm.handle_status(args);
+            else if (cmd == "start") pm.handle_start(args);
+            else if (cmd == "stop") pm.handle_stop(args);
+            else if (cmd == "restart") pm.handle_restart(args);
+            else if (cmd == "reload") pm.handle_reload();
             else std::cout << "*** Unknown syntax: " << cmd << "\n";
         } catch (const std::exception& e) {
             std::cerr << "Error: " << e.what() << "\n";
         }
     }
 
-    std::cout << "Exiting Taskmaster shell.\n";
     return 0;
 }

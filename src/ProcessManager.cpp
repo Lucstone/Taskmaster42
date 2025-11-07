@@ -23,48 +23,93 @@
 #include <chrono>
 #include <ctime>
 
-// -------------------- Config --------------------
-void ProcessManager::loadConfig(const std::string& path) {
+void ProcessManager::loadConfig(const std::string &path) {
     _configs = ConfigParser::loadAll(path);
-}
 
-void ProcessManager::reloadConfig(const std::string& path) {
-    auto fresh = ConfigParser::loadAll(path);
+    for (const auto &[name, config] : _configs) {
+        if (_table.find(name) == _table.end()) {
+            _table[name] = std::vector<ProcessInfo>();
+            _table[name].push_back(ProcessInfo(-1));
+        }
 
-    for (auto it = _configs.begin(); it != _configs.end(); ++it) {
-        if (!fresh.count(it->first)) {
-            stopProgram(it->first);
-            logEvent("removed", it->first, -1, 0);
+        if (config.getAutostart()) {
+            startProgram(name);
         }
     }
-
-    _configs.swap(fresh);
-    startAutostartPrograms();
-    logEvent("reload", "-", -1, 0);
 }
 
+void ProcessManager::handle_status(const std::vector<std::string>& args) {
+    if (args.size() == 1)
+        std::cout << "[ProcessManager] Showing status for all programs\n";
+    else {
+        std::cout << "[ProcessManager] Showing status for specific programs:\n";
+        for (size_t i = 1; i < args.size(); ++i)
+            std::cout << "  - " << args[i] << "\n";
+    }
+}
+
+void ProcessManager::handle_start(const std::vector<std::string>& args) {
+    if (args.size() == 1)
+        std::cout << "[ProcessManager] Starting all programs\n";
+    else {
+        std::cout << "[ProcessManager] Starting specific programs:\n";
+        for (size_t i = 1; i < args.size(); ++i)
+            std::cout << "  - " << args[i] << "\n";
+    }
+}
+
+void ProcessManager::handle_stop(const std::vector<std::string>& args) {
+    if (args.size() == 1)
+        std::cout << "[ProcessManager] Stopping all programs\n";
+    else {
+        std::cout << "[ProcessManager] Stopping specific programs:\n";
+        for (size_t i = 1; i < args.size(); ++i)
+            std::cout << "  - " << args[i] << "\n";
+    }
+}
+
+void ProcessManager::handle_restart(const std::vector<std::string>& args) {
+    if (args.size() == 1)
+        std::cout << "[ProcessManager] Restarting all programs\n";
+    else {
+        std::cout << "[ProcessManager] Restarting specific programs:\n";
+        for (size_t i = 1; i < args.size(); ++i)
+            std::cout << "  - " << args[i] << "\n";
+    }
+}
+
+void ProcessManager::handle_reload() {
+    std::cout << "[ProcessManager] Reloading configuration...\n";
+}
+
+//===================================================================
+
 // -------------------- Gestion des processus --------------------
-std::vector<pid_t> ProcessManager::startProgram(const std::string& name) {
+/*std::vector<pid_t> ProcessManager::startProgram(const std::string& name) {
     std::vector<pid_t> pids;
 
     auto it = _configs.find(name);
-    if (it == _configs.end()) {
-        std::cerr << "[start] unknown program: " << name << "\n";
-        return pids;
-    }
+    if (it == _configs.end()) return pids;
 
     const ConfigParser& cfg = it->second;
     int N = std::max(1, cfg.getNumprocs());
+
+    // Assure qu'il y a au moins un ProcessInfo
+    if (_table[name].empty()) _table[name].push_back(ProcessInfo(-1));
 
     for (int i = 0; i < N; ++i) {
         pid_t pid = spawnOne(cfg);
         if (pid > 0) {
             ProcessInfo info(pid);
             info.markStartedNow();
-            _table[name].push_back(info);
+
+            if (i < (int)_table[name].size()) {
+                _table[name][i] = info; // remplacer si existant
+            } else {
+                _table[name].push_back(info); // sinon ajouter
+            }
+
             pids.push_back(pid);
-        } else {
-            std::cerr << "[start] failed: " << name << " instance " << i << "\n";
         }
     }
     return pids;
@@ -158,26 +203,22 @@ pid_t ProcessManager::spawnOne(const ConfigParser& cfg) {
 
 // -------------------- Logs / Status --------------------
 void ProcessManager::printStatus() const {
-    if (_table.empty()) {
-        std::cout << "No programs loaded.\n";
-        return;
-    }
+    if (_table.empty()) return;
 
-    // Obtenir la taille max des noms
+    // Calcul du max length des noms
     size_t maxNameLen = 0;
     for (const auto& kv : _table)
         maxNameLen = std::max(maxNameLen, kv.first.size());
 
-    // Largeur minimale (comme Supervisor)
     const size_t MIN_WIDTH = 33;
     size_t colWidth = std::max(maxNameLen, MIN_WIDTH);
 
-    // Trier les programmes par ordre ASCII
+    // Tri des noms ASCII
     std::vector<std::string> names;
     for (const auto& kv : _table) names.push_back(kv.first);
     std::sort(names.begin(), names.end());
 
-    // Calcul du temps d'uptime
+    // Fonction format uptime
     auto formatUptime = [](time_t startedAt) -> std::string {
         if (startedAt == 0) return "0:00:00";
         int diff = static_cast<int>(std::time(nullptr) - startedAt);
@@ -190,19 +231,47 @@ void ProcessManager::printStatus() const {
         return oss.str();
     };
 
-    // Affichage des lignes
+    // Fonction format stop time
+    auto formatStopTime = [](time_t stoppedAt) -> std::string {
+        if (stoppedAt == 0) return "Not started";
+        std::tm* tm_ptr = std::localtime(&stoppedAt);
+        char buf[64];
+        std::strftime(buf, sizeof(buf), "%b %d %I:%M %p", tm_ptr);
+        return std::string(buf);
+    };
+
     for (const std::string& name : names) {
         const auto& processes = _table.at(name);
         if (processes.empty()) continue;
 
         const ProcessInfo& pinfo = processes.back();
 
-        std::cout << std::left << std::setw(colWidth)
-                  << name
-                  << (pinfo.isRunning() ? "RUNNING   " : "STOPPED   ")
-                  << "pid " << std::setw(6) << pinfo.getPid()
-                  << ", uptime " << formatUptime(pinfo.getStartedAt())
-                  << "\n";
+        std::string state;
+        std::ostringstream extra;
+
+        switch (pinfo.getState()) {
+            case ProcessInfo::STARTING:
+                state = "STARTING";
+                break;
+            case ProcessInfo::RUNNING:
+                state = "RUNNING";
+                extra << "pid " << std::setw(6) << pinfo.getPid()
+                      << ", uptime " << formatUptime(pinfo.getStartedAt());
+                break;
+            case ProcessInfo::STOPPED:
+            default:
+                state = "STOPPED";
+                if (!pinfo.everStarted())
+                    extra << "Not started";
+                else
+                    extra << formatStopTime(pinfo.getStoppedAt());
+                break;
+        }
+
+        std::cout << std::left << std::setw(colWidth + 3) << name
+                  << std::setw(10) << state
+                  << extra.str()
+                  << std::endl;
     }
 }
 
@@ -212,3 +281,4 @@ void ProcessManager::logEvent(const std::string& type, const std::string& name, 
               << " pid=" << pid
               << " code=" << code << "\n";
 }
+*/

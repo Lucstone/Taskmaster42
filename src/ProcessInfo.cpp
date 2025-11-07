@@ -13,33 +13,40 @@
 #include "ProcessInfo.hpp"
 #include <ctime>
 
-// ---------------------- Constructeur / Destructeur ----------------------
 ProcessInfo::ProcessInfo(pid_t pid) 
-    : _pid(pid), _restarts(0), _startFailures(0), _startedAt(0) {}
+    : _pid(pid), _restarts(0), _startFailures(0),
+      _startedAt(0), _stoppedAt(0), _state(STOPPED),
+      _everStarted(false) {}
 
-ProcessInfo::~ProcessInfo() {}
-
-// ---------------------- Getters ----------------------
 pid_t ProcessInfo::getPid() const { return _pid; }
 int ProcessInfo::getRestarts() const { return _restarts; }
 int ProcessInfo::getStartFailures() const { return _startFailures; }
 time_t ProcessInfo::getStartedAt() const { return _startedAt; }
+time_t ProcessInfo::getStoppedAt() const { return _stoppedAt; }
+ProcessInfo::State ProcessInfo::getState() const { return _state; }
 
-// ---------------------- Setters ----------------------
+bool ProcessInfo::everStarted() const { return _everStarted; }
+
 void ProcessInfo::setPid(pid_t pid) { _pid = pid; }
 void ProcessInfo::setRestarts(int restarts) { _restarts = restarts; }
 void ProcessInfo::setStartFailures(int failure) { _startFailures = failure; }
 void ProcessInfo::setStartedAt(time_t t) { _startedAt = t; }
+void ProcessInfo::setStoppedAt(time_t t) { _stoppedAt = t; }
+void ProcessInfo::setState(State s) { _state = s; }
 
-// ---------------------- Fonctions utilitaires ----------------------
-void ProcessInfo::incrementRestarts() { _restarts++; }
-void ProcessInfo::incrementStartFailures() { _startFailures++; }
+void ProcessInfo::markStarting() { _state = STARTING; }
+void ProcessInfo::markStartedNow() {
+    _startedAt = std::time(nullptr);
+    _state = RUNNING;
+    _everStarted = true;
+}
+void ProcessInfo::markStopped() {
+    _pid = -1;
+    _state = STOPPED;
+    _stoppedAt = std::time(nullptr);
+}
 
-void ProcessInfo::markStartedNow() { _startedAt = std::time(nullptr); }
-
-void ProcessInfo::markStopped() { _pid = -1; }
-
-bool ProcessInfo::isRunning() const { return _pid > 0; }
+bool ProcessInfo::isRunning() const { return _state == RUNNING && _pid > 0; }
 
 bool ProcessInfo::diedTooEarly(int starttime) const {
     if (_startedAt == 0) return false;
