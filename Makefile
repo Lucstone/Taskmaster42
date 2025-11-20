@@ -13,8 +13,8 @@
 NAME = taskmaster
 
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++17 -Iinclude
-SCRS = $(wildcard ./src/*.cpp)
+CXXFLAGS = -Wall -Wextra -Werror -std=c++17
+SRCS = $(shell find ./src -name "*.cpp")
 
 #COLORS
 RED = \033[1;31m
@@ -22,7 +22,7 @@ GREEN = \033[1;32m
 YELLOW = \033[1;33m
 DEFAULT = \033[0m
 
-OBJS =${SCRS:.cpp=.o}
+OBJS =${SRCS:.cpp=.o}
 
 LIBS = -lyaml-cpp -lpthread -lreadline
 
@@ -34,12 +34,6 @@ $(NAME): $(OBJS)
 	@echo "$(GREEN) Computing all files !$(DEFAULT)" 
 
 all : $(NAME)
-
-test_exec : test/test_exec.cpp src/ConfigParser.cpp
-	$(CXX) $(CXXFLAGS) $^ -o $@ $(LIBS)
-
-run_test : test_exec
-	./test_exec
 
 clean :
 	@rm -f $(OBJS)

@@ -1,0 +1,554 @@
+[2025-11-18 10:10:15] INFO   : ========================================
+[2025-11-18 10:10:15] INFO   : Taskmaster starting
+[2025-11-18 10:10:15] INFO   : ========================================
+[2025-11-18 10:10:15] INFO   : Signal handlers initialized
+[2025-11-18 10:10:15] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 10:10:15] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 10:10:15] DEBUG  : Parsing program: ls_cat
+[2025-11-18 10:10:15] INFO   : Program configured: ls_cat
+[2025-11-18 10:10:15] DEBUG  : Parsing program: sleep_test
+[2025-11-18 10:10:15] INFO   : Program configured: sleep_test
+[2025-11-18 10:10:15] INFO   : Successfully parsed 2 programs
+[2025-11-18 10:10:15] INFO   : Loading configuration
+[2025-11-18 10:10:15] INFO   : Configuration loaded successfully
+[2025-11-18 10:10:15] INFO   : Starting autostart programs
+[2025-11-18 10:10:15] INFO   : Autostart programs launched
+[2025-11-18 10:17:49] INFO   : Shutting down taskmaster
+[2025-11-18 10:17:49] INFO   : Shutting down all processes
+[2025-11-18 10:17:49] INFO   : Taskmaster stopped
+[2025-11-18 10:17:59] INFO   : ========================================
+[2025-11-18 10:17:59] INFO   : Taskmaster starting
+[2025-11-18 10:17:59] INFO   : ========================================
+[2025-11-18 10:17:59] INFO   : Signal handlers initialized
+[2025-11-18 10:17:59] INFO   : Loading configuration from: config/test.yaml
+[2025-11-18 10:17:59] INFO   : Parsing configuration file: config/test.yaml
+[2025-11-18 10:17:59] DEBUG  : Parsing program: sleep_test
+[2025-11-18 10:17:59] INFO   : Program configured: sleep_test
+[2025-11-18 10:17:59] DEBUG  : Parsing program: cat_demo
+[2025-11-18 10:17:59] INFO   : Program configured: cat_demo
+[2025-11-18 10:17:59] DEBUG  : Parsing program: manual_start
+[2025-11-18 10:17:59] INFO   : Program configured: manual_start
+[2025-11-18 10:17:59] DEBUG  : Parsing program: multi_instance
+[2025-11-18 10:17:59] INFO   : Program configured: multi_instance
+[2025-11-18 10:17:59] DEBUG  : Parsing program: minimal_program
+[2025-11-18 10:17:59] INFO   : Program configured: minimal_program
+[2025-11-18 10:17:59] INFO   : Successfully parsed 5 programs
+[2025-11-18 10:17:59] INFO   : Loading configuration
+[2025-11-18 10:17:59] INFO   : Configuration loaded successfully
+[2025-11-18 10:17:59] INFO   : Starting autostart programs
+[2025-11-18 10:17:59] INFO   : Autostart programs launched
+[2025-11-18 10:31:41] INFO   : Shutting down taskmaster
+[2025-11-18 10:31:41] INFO   : Shutting down all processes
+[2025-11-18 10:31:41] INFO   : Taskmaster stopped
+[2025-11-18 10:32:33] INFO   : ========================================
+[2025-11-18 10:32:33] INFO   : Taskmaster starting
+[2025-11-18 10:32:33] INFO   : ========================================
+[2025-11-18 10:32:33] INFO   : Signal handlers initialized
+[2025-11-18 10:32:33] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 10:32:33] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 10:32:33] DEBUG  : Parsing program: ls_cat
+[2025-11-18 10:32:33] INFO   : Program configured: ls_cat
+[2025-11-18 10:32:33] DEBUG  : Parsing program: sleep_test
+[2025-11-18 10:32:33] INFO   : Program configured: sleep_test
+[2025-11-18 10:32:33] INFO   : Successfully parsed 2 programs
+[2025-11-18 10:32:33] INFO   : Loading configuration
+[2025-11-18 10:32:33] INFO   : Configuration loaded successfully
+[2025-11-18 10:32:33] INFO   : Starting autostart programs
+[2025-11-18 10:32:33] INFO   : Autostart programs launched
+[2025-11-18 10:33:14] INFO   : Shutting down taskmaster
+[2025-11-18 10:33:14] INFO   : Shutting down all processes
+[2025-11-18 10:33:14] INFO   : Taskmaster stopped
+[2025-11-18 10:33:20] INFO   : ========================================
+[2025-11-18 10:33:20] INFO   : Taskmaster starting
+[2025-11-18 10:33:20] INFO   : ========================================
+[2025-11-18 10:33:20] INFO   : Signal handlers initialized
+[2025-11-18 10:33:20] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 10:33:20] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 10:33:20] ERROR  : YAML parsing error: yaml-cpp: error at line 3, column 21: end of map not found
+[2025-11-18 10:33:20] ERROR  : Failed to load configuration: Failed to parse config file: yaml-cpp: error at line 3, column 21: end of map not found
+[2025-11-18 10:33:20] ERROR  : Fatal error: Failed to parse config file: yaml-cpp: error at line 3, column 21: end of map not found
+[2025-11-18 10:33:38] INFO   : ========================================
+[2025-11-18 10:33:38] INFO   : Taskmaster starting
+[2025-11-18 10:33:38] INFO   : ========================================
+[2025-11-18 10:33:38] INFO   : Signal handlers initialized
+[2025-11-18 10:33:38] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 10:33:38] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 10:33:38] DEBUG  : Parsing program: ls_cat
+[2025-11-18 10:33:38] INFO   : Program configured: ls_cat
+[2025-11-18 10:33:38] DEBUG  : Parsing program: sleep_test
+[2025-11-18 10:33:38] INFO   : Program configured: sleep_test
+[2025-11-18 10:33:38] INFO   : Successfully parsed 2 programs
+[2025-11-18 10:33:38] INFO   : Loading configuration
+[2025-11-18 10:33:38] INFO   : Configuration loaded successfully
+[2025-11-18 10:33:38] INFO   : Starting autostart programs
+[2025-11-18 10:33:38] INFO   : Autostart programs launched
+[2025-11-18 10:34:20] INFO   : Shutting down taskmaster
+[2025-11-18 10:34:20] INFO   : Shutting down all processes
+[2025-11-18 10:34:20] INFO   : Taskmaster stopped
+[2025-11-18 10:34:21] INFO   : ========================================
+[2025-11-18 10:34:21] INFO   : Taskmaster starting
+[2025-11-18 10:34:21] INFO   : ========================================
+[2025-11-18 10:34:21] INFO   : Signal handlers initialized
+[2025-11-18 10:34:21] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 10:34:21] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 10:34:21] DEBUG  : Parsing program: ls_cat
+[2025-11-18 10:34:21] INFO   : Program configured: ls_cat
+[2025-11-18 10:34:21] DEBUG  : Parsing program: sleep_test
+[2025-11-18 10:34:21] INFO   : Program configured: sleep_test
+[2025-11-18 10:34:21] INFO   : Successfully parsed 2 programs
+[2025-11-18 10:34:21] INFO   : Loading configuration
+[2025-11-18 10:34:21] INFO   : Configuration loaded successfully
+[2025-11-18 10:34:21] INFO   : Starting autostart programs
+[2025-11-18 10:34:21] INFO   : Autostart programs launched
+[2025-11-18 10:34:42] INFO   : Shutting down taskmaster
+[2025-11-18 10:34:42] INFO   : Shutting down all processes
+[2025-11-18 10:34:42] INFO   : Taskmaster stopped
+[2025-11-18 10:34:47] INFO   : ========================================
+[2025-11-18 10:34:47] INFO   : Taskmaster starting
+[2025-11-18 10:34:47] INFO   : ========================================
+[2025-11-18 10:34:47] INFO   : Signal handlers initialized
+[2025-11-18 10:34:47] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 10:34:47] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 10:34:47] DEBUG  : Parsing program: ls_cat
+[2025-11-18 10:34:47] ERROR  : Config parsing error: Program 'ls_cat': cmd cannot be empty
+[2025-11-18 10:34:47] ERROR  : Failed to load configuration: Program 'ls_cat': cmd cannot be empty
+[2025-11-18 10:34:47] ERROR  : Fatal error: Program 'ls_cat': cmd cannot be empty
+[2025-11-18 10:34:50] INFO   : ========================================
+[2025-11-18 10:34:50] INFO   : Taskmaster starting
+[2025-11-18 10:34:50] INFO   : ========================================
+[2025-11-18 10:34:50] INFO   : Signal handlers initialized
+[2025-11-18 10:34:50] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 10:34:50] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 10:34:50] DEBUG  : Parsing program: ls_cat
+[2025-11-18 10:34:50] ERROR  : Config parsing error: Program 'ls_cat': cmd cannot be empty
+[2025-11-18 10:34:50] ERROR  : Failed to load configuration: Program 'ls_cat': cmd cannot be empty
+[2025-11-18 10:34:50] ERROR  : Fatal error: Program 'ls_cat': cmd cannot be empty
+[2025-11-18 10:40:32] INFO   : ========================================
+[2025-11-18 10:40:32] INFO   : Taskmaster starting
+[2025-11-18 10:40:32] INFO   : ========================================
+[2025-11-18 10:40:32] INFO   : Signal handlers initialized
+[2025-11-18 10:40:32] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 10:40:32] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 10:40:32] DEBUG  : Parsing program: ls_cat
+[2025-11-18 10:40:32] ERROR  : Config parsing error: Program 'ls_cat': numprocs must be >= 1
+[2025-11-18 10:40:32] ERROR  : Failed to load configuration: Program 'ls_cat': numprocs must be >= 1
+[2025-11-18 10:40:32] ERROR  : Fatal error: Program 'ls_cat': numprocs must be >= 1
+[2025-11-18 10:40:55] INFO   : ========================================
+[2025-11-18 10:40:55] INFO   : Taskmaster starting
+[2025-11-18 10:40:55] INFO   : ========================================
+[2025-11-18 10:40:55] INFO   : Signal handlers initialized
+[2025-11-18 10:40:55] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 10:40:55] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 10:40:55] DEBUG  : Parsing program: ls_cat
+[2025-11-18 10:40:55] INFO   : Program configured: ls_cat
+[2025-11-18 10:40:55] DEBUG  : Parsing program: sleep_test
+[2025-11-18 10:40:55] INFO   : Program configured: sleep_test
+[2025-11-18 10:40:55] INFO   : Successfully parsed 2 programs
+[2025-11-18 10:40:55] INFO   : Loading configuration
+[2025-11-18 10:40:55] INFO   : Configuration loaded successfully
+[2025-11-18 10:40:55] INFO   : Starting autostart programs
+[2025-11-18 10:40:55] INFO   : Autostart programs launched
+[2025-11-18 10:41:52] INFO   : Shutting down taskmaster
+[2025-11-18 10:41:52] INFO   : Shutting down all processes
+[2025-11-18 10:41:52] INFO   : Taskmaster stopped
+[2025-11-18 10:41:53] INFO   : ========================================
+[2025-11-18 10:41:53] INFO   : Taskmaster starting
+[2025-11-18 10:41:53] INFO   : ========================================
+[2025-11-18 10:41:53] INFO   : Signal handlers initialized
+[2025-11-18 10:41:53] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 10:41:53] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 10:41:53] DEBUG  : Parsing program: ls_cat
+[2025-11-18 10:41:53] INFO   : Program configured: ls_cat
+[2025-11-18 10:41:53] DEBUG  : Parsing program: sleep_test
+[2025-11-18 10:41:53] INFO   : Program configured: sleep_test
+[2025-11-18 10:41:53] INFO   : Successfully parsed 2 programs
+[2025-11-18 10:41:53] INFO   : Loading configuration
+[2025-11-18 10:41:53] INFO   : Configuration loaded successfully
+[2025-11-18 10:41:53] INFO   : Starting autostart programs
+[2025-11-18 10:41:53] INFO   : Autostart programs launched
+[2025-11-18 10:42:06] INFO   : Shutting down taskmaster
+[2025-11-18 10:42:06] INFO   : Shutting down all processes
+[2025-11-18 10:42:06] INFO   : Taskmaster stopped
+[2025-11-18 10:42:08] INFO   : ========================================
+[2025-11-18 10:42:08] INFO   : Taskmaster starting
+[2025-11-18 10:42:08] INFO   : ========================================
+[2025-11-18 10:42:08] INFO   : Signal handlers initialized
+[2025-11-18 10:42:08] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 10:42:08] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 10:42:08] DEBUG  : Parsing program: ls_cat
+[2025-11-18 10:42:08] INFO   : Program configured: ls_cat
+[2025-11-18 10:42:08] DEBUG  : Parsing program: sleep_test
+[2025-11-18 10:42:08] INFO   : Program configured: sleep_test
+[2025-11-18 10:42:08] INFO   : Successfully parsed 2 programs
+[2025-11-18 10:42:08] INFO   : Loading configuration
+[2025-11-18 10:42:08] INFO   : Configuration loaded successfully
+[2025-11-18 10:42:08] INFO   : Starting autostart programs
+[2025-11-18 10:42:08] INFO   : Autostart programs launched
+[2025-11-18 10:42:27] INFO   : Shutting down taskmaster
+[2025-11-18 10:42:27] INFO   : Shutting down all processes
+[2025-11-18 10:42:27] INFO   : Taskmaster stopped
+[2025-11-18 10:42:29] INFO   : ========================================
+[2025-11-18 10:42:29] INFO   : Taskmaster starting
+[2025-11-18 10:42:29] INFO   : ========================================
+[2025-11-18 10:42:29] INFO   : Signal handlers initialized
+[2025-11-18 10:42:29] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 10:42:29] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 10:42:29] DEBUG  : Parsing program: ls_cat
+[2025-11-18 10:42:29] INFO   : Program configured: ls_cat
+[2025-11-18 10:42:29] INFO   : Successfully parsed 1 programs
+[2025-11-18 10:42:29] INFO   : Loading configuration
+[2025-11-18 10:42:29] INFO   : Configuration loaded successfully
+[2025-11-18 10:42:29] INFO   : Starting autostart programs
+[2025-11-18 10:42:29] INFO   : Autostart programs launched
+[2025-11-18 10:42:41] INFO   : Shutting down taskmaster
+[2025-11-18 10:42:41] INFO   : Shutting down all processes
+[2025-11-18 10:42:41] INFO   : Taskmaster stopped
+[2025-11-18 10:42:41] INFO   : ========================================
+[2025-11-18 10:42:41] INFO   : Taskmaster starting
+[2025-11-18 10:42:41] INFO   : ========================================
+[2025-11-18 10:42:41] INFO   : Signal handlers initialized
+[2025-11-18 10:42:41] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 10:42:41] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 10:42:41] DEBUG  : Parsing program: ls_cat
+[2025-11-18 10:42:41] ERROR  : YAML parsing error: yaml-cpp: error at line 4, column 15: bad conversion
+[2025-11-18 10:42:41] ERROR  : Failed to load configuration: Failed to parse config file: yaml-cpp: error at line 4, column 15: bad conversion
+[2025-11-18 10:42:41] ERROR  : Fatal error: Failed to parse config file: yaml-cpp: error at line 4, column 15: bad conversion
+[2025-11-18 12:17:06] INFO   : ========================================
+[2025-11-18 12:17:06] INFO   : Taskmaster starting
+[2025-11-18 12:17:06] INFO   : ========================================
+[2025-11-18 12:17:06] INFO   : Signal handlers initialized
+[2025-11-18 12:17:06] INFO   : Loading configuration from: config/test.yaml
+[2025-11-18 12:17:06] INFO   : Parsing configuration file: config/test.yaml
+[2025-11-18 12:17:06] DEBUG  : Parsing program: sleep_test
+[2025-11-18 12:17:06] INFO   : Program configured: sleep_test
+[2025-11-18 12:17:06] DEBUG  : Parsing program: cat_demo
+[2025-11-18 12:17:06] INFO   : Program configured: cat_demo
+[2025-11-18 12:17:06] DEBUG  : Parsing program: manual_start
+[2025-11-18 12:17:06] INFO   : Program configured: manual_start
+[2025-11-18 12:17:06] DEBUG  : Parsing program: multi_instance
+[2025-11-18 12:17:06] INFO   : Program configured: multi_instance
+[2025-11-18 12:17:06] DEBUG  : Parsing program: minimal_program
+[2025-11-18 12:17:06] INFO   : Program configured: minimal_program
+[2025-11-18 12:17:06] INFO   : Successfully parsed 5 programs
+[2025-11-18 12:17:06] INFO   : Loading configuration
+[2025-11-18 12:17:06] INFO   : Configuration loaded successfully
+[2025-11-18 12:17:06] INFO   : Starting autostart programs
+[2025-11-18 12:17:06] INFO   : Autostart programs launched
+[2025-11-18 13:42:31] INFO   : Shutting down taskmaster
+[2025-11-18 13:42:31] INFO   : Shutting down all processes
+[2025-11-18 13:42:31] INFO   : Taskmaster stopped
+[2025-11-18 16:07:01] INFO   : ========================================
+[2025-11-18 16:07:01] INFO   : Taskmaster starting
+[2025-11-18 16:07:01] INFO   : ========================================
+[2025-11-18 16:07:01] INFO   : Signal handlers initialized
+[2025-11-18 16:07:01] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 16:07:01] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 16:07:01] DEBUG  : Parsing program: ls_cat
+[2025-11-18 16:07:01] INFO   : Program configured: ls_cat
+[2025-11-18 16:07:01] INFO   : Successfully parsed 1 programs
+[2025-11-18 16:07:01] INFO   : Loading configuration
+[2025-11-18 16:07:01] INFO   : Creating 1 instances of ls_cat
+[2025-11-18 16:07:01] INFO   : Configuration loaded with 1 programs
+[2025-11-18 16:07:01] INFO   : Configuration loaded successfully
+[2025-11-18 16:07:01] INFO   : Starting autostart programs
+[2025-11-18 16:07:01] INFO   : Starting program: ls_cat
+[2025-11-18 16:07:01] INFO   : Starting process: ls_cat_0
+[2025-11-18 16:07:01] INFO   : Process started: ls_cat_0 PID: 20780
+[2025-11-18 16:07:01] INFO   : Autostart programs launched
+[2025-11-18 16:26:37] INFO   : ========================================
+[2025-11-18 16:26:37] INFO   : Taskmaster starting
+[2025-11-18 16:26:37] INFO   : ========================================
+[2025-11-18 16:26:37] INFO   : Signal handlers initialized
+[2025-11-18 16:26:37] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 16:26:37] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 16:26:37] DEBUG  : Parsing program: cat
+[2025-11-18 16:26:37] INFO   : Program configured: cat
+[2025-11-18 16:26:37] INFO   : Successfully parsed 1 programs
+[2025-11-18 16:26:37] INFO   : Loading configuration
+[2025-11-18 16:26:37] INFO   : Creating 1 instances of cat
+[2025-11-18 16:26:37] INFO   : Configuration loaded with 1 programs
+[2025-11-18 16:26:37] INFO   : Configuration loaded successfully
+[2025-11-18 16:26:37] INFO   : Starting autostart programs
+[2025-11-18 16:26:37] INFO   : Starting program: cat
+[2025-11-18 16:26:37] INFO   : Starting process: cat_0
+[2025-11-18 16:26:37] INFO   : Process started: cat_0 PID: 21757
+[2025-11-18 16:26:37] INFO   : Autostart programs launched
+[2025-11-18 16:26:40] DEBUG  : Reaped process PID: 21757
+[2025-11-18 16:26:40] INFO   : Process exited with code 0: cat_0
+[2025-11-18 16:26:40] INFO   : Process exited (expected): cat_0
+[2025-11-18 16:27:16] INFO   : Starting program: cat
+[2025-11-18 16:27:16] INFO   : Starting process: cat_0
+[2025-11-18 16:27:16] INFO   : Process started: cat_0 PID: 21856
+[2025-11-18 16:27:19] DEBUG  : Reaped process PID: 21856
+[2025-11-18 16:27:19] INFO   : Process exited with code 0: cat_0
+[2025-11-18 16:27:19] INFO   : Process exited (expected): cat_0
+[2025-11-18 16:40:09] INFO   : Shutting down taskmaster
+[2025-11-18 16:40:09] INFO   : Shutting down process manager
+[2025-11-18 16:40:09] INFO   : Stopping all processes
+[2025-11-18 16:40:09] INFO   : Stopping program: cat
+[2025-11-18 16:40:11] INFO   : Killing process: cat_0
+[2025-11-18 16:40:11] INFO   : Taskmaster stopped
+[2025-11-18 16:40:36] INFO   : ========================================
+[2025-11-18 16:40:36] INFO   : Taskmaster starting
+[2025-11-18 16:40:36] INFO   : ========================================
+[2025-11-18 16:40:36] INFO   : Signal handlers initialized
+[2025-11-18 16:40:36] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 16:40:36] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 16:40:36] DEBUG  : Parsing program: cat
+[2025-11-18 16:40:36] INFO   : Program configured: cat
+[2025-11-18 16:40:36] INFO   : Successfully parsed 1 programs
+[2025-11-18 16:40:36] INFO   : Loading configuration
+[2025-11-18 16:40:36] INFO   : Creating 1 instances of cat
+[2025-11-18 16:40:36] INFO   : Configuration loaded with 1 programs
+[2025-11-18 16:40:36] INFO   : Configuration loaded successfully
+[2025-11-18 16:40:36] INFO   : Starting autostart programs
+[2025-11-18 16:40:36] INFO   : Starting program: cat
+[2025-11-18 16:40:36] INFO   : Starting process: cat_0
+[2025-11-18 16:40:36] INFO   : Process started: cat_0 PID: 22405
+[2025-11-18 16:40:36] INFO   : Autostart programs launched
+[2025-11-18 16:40:56] DEBUG  : Reaped process PID: 20780
+[2025-11-18 16:40:56] INFO   : Process killed by signal SIGINT: ls_cat_0
+[2025-11-18 16:40:56] INFO   : Process will be restarted: ls_cat_0
+[2025-11-18 16:40:56] INFO   : Starting process: ls_cat_0
+[2025-11-18 16:40:56] INFO   : Process started: ls_cat_0 PID: 22543
+[2025-11-18 16:40:56] INFO   : Shutting down taskmaster
+[2025-11-18 16:40:56] INFO   : Shutting down process manager
+[2025-11-18 16:40:56] INFO   : Stopping all processes
+[2025-11-18 16:40:56] INFO   : Stopping program: ls_cat
+[2025-11-18 16:40:56] INFO   : Stopping process: ls_cat_0
+[2025-11-18 16:40:56] INFO   : Sending signal SIGTERM to process: ls_cat_0
+[2025-11-18 16:40:57] INFO   : Process now running: cat_0
+[2025-11-18 16:40:57] INFO   : Shutting down taskmaster
+[2025-11-18 16:40:57] INFO   : Shutting down process manager
+[2025-11-18 16:40:57] INFO   : Stopping all processes
+[2025-11-18 16:40:57] INFO   : Stopping program: cat
+[2025-11-18 16:40:57] INFO   : Stopping process: cat_0
+[2025-11-18 16:40:57] INFO   : Sending signal SIGTERM to process: cat_0
+[2025-11-18 16:40:57] INFO   : Killing process: cat_0
+[2025-11-18 16:40:57] INFO   : Taskmaster stopped
+[2025-11-18 16:40:58] INFO   : Killing process: ls_cat_0
+[2025-11-18 16:40:58] INFO   : Taskmaster stopped
+[2025-11-18 16:43:17] INFO   : ========================================
+[2025-11-18 16:43:17] INFO   : Taskmaster starting
+[2025-11-18 16:43:17] INFO   : ========================================
+[2025-11-18 16:43:17] INFO   : Signal handlers initialized
+[2025-11-18 16:43:17] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 16:43:17] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 16:43:17] DEBUG  : Parsing program: cat
+[2025-11-18 16:43:17] INFO   : Program configured: cat
+[2025-11-18 16:43:17] INFO   : Successfully parsed 1 programs
+[2025-11-18 16:43:17] INFO   : Loading configuration
+[2025-11-18 16:43:17] INFO   : Creating 1 instances of cat
+[2025-11-18 16:43:17] INFO   : Configuration loaded with 1 programs
+[2025-11-18 16:43:17] INFO   : Configuration loaded successfully
+[2025-11-18 16:43:17] INFO   : Starting autostart programs
+[2025-11-18 16:43:17] INFO   : Starting program: cat
+[2025-11-18 16:43:17] INFO   : Starting process: cat_0
+[2025-11-18 16:43:17] INFO   : Process started: cat_0 PID: 22738
+[2025-11-18 16:43:17] INFO   : Autostart programs launched
+[2025-11-18 16:43:22] DEBUG  : Reaped process PID: 22738
+[2025-11-18 16:43:22] INFO   : Process exited with code 0: cat_0
+[2025-11-18 16:43:22] INFO   : Process exited (expected): cat_0
+[2025-11-18 16:58:00] INFO   : Shutting down taskmaster
+[2025-11-18 16:58:00] INFO   : Shutting down process manager
+[2025-11-18 16:58:00] INFO   : Stopping all processes
+[2025-11-18 16:58:00] INFO   : Stopping program: cat
+[2025-11-18 16:58:02] INFO   : Killing process: cat_0
+[2025-11-18 16:58:02] INFO   : Taskmaster stopped
+[2025-11-18 17:00:27] INFO   : ========================================
+[2025-11-18 17:00:27] INFO   : Taskmaster starting
+[2025-11-18 17:00:27] INFO   : ========================================
+[2025-11-18 17:00:27] INFO   : Signal handlers initialized
+[2025-11-18 17:00:27] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 17:00:27] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 17:00:27] DEBUG  : Parsing program: cat
+[2025-11-18 17:00:27] INFO   : Program configured: cat
+[2025-11-18 17:00:27] INFO   : Successfully parsed 1 programs
+[2025-11-18 17:00:27] INFO   : Loading configuration
+[2025-11-18 17:00:27] INFO   : Creating 1 instances of cat
+[2025-11-18 17:00:27] INFO   : Configuration loaded with 1 programs
+[2025-11-18 17:00:27] INFO   : Configuration loaded successfully
+[2025-11-18 17:00:27] INFO   : Starting autostart programs
+[2025-11-18 17:00:27] INFO   : Starting program: cat
+[2025-11-18 17:00:27] INFO   : Starting process: cat_0
+[2025-11-18 17:00:27] INFO   : Process started (pty) : cat_0 PID: 23246
+[2025-11-18 17:00:27] INFO   : Process started: cat_0 PID: 23246
+[2025-11-18 17:00:27] INFO   : Autostart programs launched
+[2025-11-18 17:00:31] INFO   : Process now running: cat_0
+[2025-11-18 17:00:54] INFO   : Stopping program: cat
+[2025-11-18 17:00:54] INFO   : Stopping process: cat_0
+[2025-11-18 17:00:54] INFO   : Sending signal SIGTERM to process: cat_0
+[2025-11-18 17:00:59] DEBUG  : Reaped process PID: 23246
+[2025-11-18 17:00:59] INFO   : Process killed by signal SIGTERM: cat_0
+[2025-11-18 17:00:59] INFO   : Process will be restarted: cat_0
+[2025-11-18 17:00:59] INFO   : Starting process: cat_0
+[2025-11-18 17:00:59] INFO   : Process started (pty) : cat_0 PID: 23428
+[2025-11-18 17:00:59] INFO   : Process started: cat_0 PID: 23428
+[2025-11-18 17:01:07] INFO   : Process now running: cat_0
+[2025-11-18 17:01:38] INFO   : Stopping program: cat
+[2025-11-18 17:01:38] INFO   : Stopping process: cat_0
+[2025-11-18 17:01:38] INFO   : Sending signal SIGTERM to process: cat_0
+[2025-11-18 17:01:40] DEBUG  : Reaped process PID: 23428
+[2025-11-18 17:01:40] INFO   : Process killed by signal SIGTERM: cat_0
+[2025-11-18 17:01:40] INFO   : Process will be restarted: cat_0
+[2025-11-18 17:01:40] INFO   : Starting process: cat_0
+[2025-11-18 17:01:40] INFO   : Process started (pty) : cat_0 PID: 23543
+[2025-11-18 17:01:40] INFO   : Process started: cat_0 PID: 23543
+[2025-11-18 17:01:45] INFO   : Process now running: cat_0
+[2025-11-18 17:01:49] INFO   : Stopping program: cat
+[2025-11-18 17:01:49] INFO   : Stopping process: cat_0
+[2025-11-18 17:01:49] INFO   : Sending signal SIGTERM to process: cat_0
+[2025-11-18 17:01:51] DEBUG  : Reaped process PID: 23543
+[2025-11-18 17:01:51] INFO   : Process killed by signal SIGTERM: cat_0
+[2025-11-18 17:01:51] ERROR  : Max restart attempts reached: cat_0
+[2025-11-18 17:58:16] INFO   : Shutting down taskmaster
+[2025-11-18 17:58:16] INFO   : Shutting down process manager
+[2025-11-18 17:58:16] INFO   : Stopping all processes
+[2025-11-18 17:58:16] INFO   : Stopping program: cat
+[2025-11-18 17:58:18] INFO   : Killing process: cat_0
+[2025-11-18 17:58:18] INFO   : Taskmaster stopped
+[2025-11-18 17:58:31] INFO   : ========================================
+[2025-11-18 17:58:31] INFO   : Taskmaster starting
+[2025-11-18 17:58:31] INFO   : ========================================
+[2025-11-18 17:58:31] INFO   : Signal handlers initialized
+[2025-11-18 17:58:31] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 17:58:31] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 17:58:31] DEBUG  : Parsing program: cat
+[2025-11-18 17:58:31] INFO   : Program configured: cat
+[2025-11-18 17:58:31] INFO   : Successfully parsed 1 programs
+[2025-11-18 17:58:31] INFO   : Loading configuration
+[2025-11-18 17:58:31] INFO   : Creating 1 instances of cat
+[2025-11-18 17:58:31] INFO   : Configuration loaded with 1 programs
+[2025-11-18 17:58:31] INFO   : Configuration loaded successfully
+[2025-11-18 17:58:31] INFO   : Starting autostart programs
+[2025-11-18 17:58:31] INFO   : Starting program: cat
+[2025-11-18 17:58:31] INFO   : Starting process: cat_0
+[2025-11-18 17:58:31] INFO   : Process started: cat_0 PID: 24883
+[2025-11-18 17:58:31] INFO   : Autostart programs launched
+[2025-11-18 17:58:34] DEBUG  : Reaped process PID: 24883
+[2025-11-18 17:58:34] INFO   : Process exited with code 0: cat_0
+[2025-11-18 17:58:34] INFO   : Process exited (expected): cat_0
+[2025-11-18 18:01:59] INFO   : Shutting down taskmaster
+[2025-11-18 18:01:59] INFO   : Shutting down process manager
+[2025-11-18 18:01:59] INFO   : Stopping all processes
+[2025-11-18 18:01:59] INFO   : Stopping program: cat
+[2025-11-18 18:02:01] INFO   : Killing process: cat_0
+[2025-11-18 18:02:01] INFO   : Taskmaster stopped
+[2025-11-18 18:02:12] INFO   : ========================================
+[2025-11-18 18:02:12] INFO   : Taskmaster starting
+[2025-11-18 18:02:12] INFO   : ========================================
+[2025-11-18 18:02:12] INFO   : Signal handlers initialized
+[2025-11-18 18:02:12] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 18:02:12] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 18:02:12] DEBUG  : Parsing program: cat
+[2025-11-18 18:02:12] INFO   : Program configured: cat
+[2025-11-18 18:02:12] INFO   : Successfully parsed 1 programs
+[2025-11-18 18:02:12] INFO   : Loading configuration
+[2025-11-18 18:02:12] INFO   : Creating 1 instances of cat
+[2025-11-18 18:02:12] INFO   : Configuration loaded with 1 programs
+[2025-11-18 18:02:12] INFO   : Configuration loaded successfully
+[2025-11-18 18:02:12] INFO   : Starting autostart programs
+[2025-11-18 18:02:12] INFO   : Starting program: cat
+[2025-11-18 18:02:12] INFO   : Starting process: cat_0
+[2025-11-18 18:02:12] INFO   : Process started: cat_0 PID: 25172
+[2025-11-18 18:02:12] INFO   : Autostart programs launched
+[2025-11-18 18:02:15] INFO   : Process now running: cat_0
+[2025-11-18 18:02:26] INFO   : Stopping program: cat
+[2025-11-18 18:02:26] INFO   : Stopping process: cat_0
+[2025-11-18 18:02:26] INFO   : Sending signal SIGTERM to process: cat_0
+[2025-11-18 18:02:28] DEBUG  : Reaped process PID: 25172
+[2025-11-18 18:02:28] INFO   : Process killed by signal SIGTERM: cat_0
+[2025-11-18 18:02:28] INFO   : Process will be restarted: cat_0
+[2025-11-18 18:02:28] INFO   : Starting process: cat_0
+[2025-11-18 18:02:28] INFO   : Process started: cat_0 PID: 25265
+[2025-11-18 18:02:30] INFO   : Process now running: cat_0
+[2025-11-18 18:02:42] INFO   : Stopping program: cat
+[2025-11-18 18:02:42] INFO   : Stopping process: cat_0
+[2025-11-18 18:02:42] INFO   : Sending signal SIGTERM to process: cat_0
+[2025-11-18 18:02:42] DEBUG  : Reaped process PID: 25265
+[2025-11-18 18:02:42] INFO   : Process killed by signal SIGTERM: cat_0
+[2025-11-18 18:02:42] INFO   : Process will be restarted: cat_0
+[2025-11-18 18:02:42] INFO   : Starting process: cat_0
+[2025-11-18 18:02:42] INFO   : Process started: cat_0 PID: 25368
+[2025-11-18 18:03:21] INFO   : Process now running: cat_0
+[2025-11-18 18:03:21] INFO   : Shutting down taskmaster
+[2025-11-18 18:03:21] INFO   : Shutting down process manager
+[2025-11-18 18:03:21] INFO   : Stopping all processes
+[2025-11-18 18:03:21] INFO   : Stopping program: cat
+[2025-11-18 18:03:21] INFO   : Stopping process: cat_0
+[2025-11-18 18:03:21] INFO   : Sending signal SIGTERM to process: cat_0
+[2025-11-18 18:03:21] INFO   : Killing process: cat_0
+[2025-11-18 18:03:21] INFO   : Taskmaster stopped
+[2025-11-18 18:03:23] INFO   : ========================================
+[2025-11-18 18:03:23] INFO   : Taskmaster starting
+[2025-11-18 18:03:23] INFO   : ========================================
+[2025-11-18 18:03:23] INFO   : Signal handlers initialized
+[2025-11-18 18:03:23] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 18:03:23] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 18:03:23] DEBUG  : Parsing program: cat
+[2025-11-18 18:03:23] INFO   : Program configured: cat
+[2025-11-18 18:03:23] INFO   : Successfully parsed 1 programs
+[2025-11-18 18:03:23] INFO   : Loading configuration
+[2025-11-18 18:03:23] INFO   : Creating 1 instances of cat
+[2025-11-18 18:03:23] INFO   : Configuration loaded with 1 programs
+[2025-11-18 18:03:23] INFO   : Configuration loaded successfully
+[2025-11-18 18:03:23] INFO   : Starting autostart programs
+[2025-11-18 18:03:23] INFO   : Starting program: cat
+[2025-11-18 18:03:23] INFO   : Starting process: cat_0
+[2025-11-18 18:03:23] INFO   : Process started: cat_0 PID: 25444
+[2025-11-18 18:03:23] INFO   : Autostart programs launched
+[2025-11-18 18:03:33] INFO   : Process now running: cat_0
+[2025-11-18 18:04:47] INFO   : Stopping program: cat
+[2025-11-18 18:04:47] INFO   : Stopping process: cat_0
+[2025-11-18 18:04:47] INFO   : Sending signal SIGTERM to process: cat_0
+[2025-11-18 18:04:49] DEBUG  : Reaped process PID: 25444
+[2025-11-18 18:04:49] INFO   : Process killed by signal SIGTERM: cat_0
+[2025-11-18 18:04:49] INFO   : Process will be restarted: cat_0
+[2025-11-18 18:04:49] INFO   : Starting process: cat_0
+[2025-11-18 18:04:49] INFO   : Process started: cat_0 PID: 25616
+[2025-11-18 18:11:52] INFO   : Process now running: cat_0
+[2025-11-18 18:11:52] INFO   : Shutting down taskmaster
+[2025-11-18 18:11:52] INFO   : Shutting down process manager
+[2025-11-18 18:11:52] INFO   : Stopping all processes
+[2025-11-18 18:11:52] INFO   : Stopping program: cat
+[2025-11-18 18:11:52] INFO   : Stopping process: cat_0
+[2025-11-18 18:11:52] INFO   : Sending signal SIGTERM to process: cat_0
+[2025-11-18 18:11:52] INFO   : Killing process: cat_0
+[2025-11-18 18:11:52] INFO   : Taskmaster stopped
+[2025-11-18 18:12:06] INFO   : ========================================
+[2025-11-18 18:12:06] INFO   : Taskmaster starting
+[2025-11-18 18:12:06] INFO   : ========================================
+[2025-11-18 18:12:06] INFO   : Signal handlers initialized
+[2025-11-18 18:12:06] INFO   : Loading configuration from: config/taskmaster.yaml
+[2025-11-18 18:12:06] INFO   : Parsing configuration file: config/taskmaster.yaml
+[2025-11-18 18:12:06] DEBUG  : Parsing program: cat
+[2025-11-18 18:12:06] INFO   : Program configured: cat
+[2025-11-18 18:12:06] INFO   : Successfully parsed 1 programs
+[2025-11-18 18:12:06] INFO   : Loading configuration
+[2025-11-18 18:12:06] INFO   : Creating 1 instances of cat
+[2025-11-18 18:12:06] INFO   : Configuration loaded with 1 programs
+[2025-11-18 18:12:06] INFO   : Configuration loaded successfully
+[2025-11-18 18:12:06] INFO   : Starting autostart programs
+[2025-11-18 18:12:06] INFO   : Starting program: cat
+[2025-11-18 18:12:06] INFO   : Starting process: cat_0
+[2025-11-18 18:12:06] INFO   : Process started: cat_0 PID: 25977
+[2025-11-18 18:12:06] INFO   : Autostart programs launched
+[2025-11-18 18:12:17] INFO   : Process now running: cat_0
+[2025-11-18 18:12:21] INFO   : Stopping program: cat
+[2025-11-18 18:12:21] INFO   : Stopping process: cat_0
+[2025-11-18 18:12:21] INFO   : Sending signal SIGTERM to process: cat_0
+[2025-11-18 18:12:22] DEBUG  : Reaped process PID: 25977
+[2025-11-18 18:12:22] INFO   : Process killed by signal SIGTERM: cat_0
+[2025-11-18 18:12:22] INFO   : Process stopped as requested: cat_0
+[2025-11-18 18:12:39] INFO   : Starting program: cat
+[2025-11-18 18:12:39] INFO   : Starting process: cat_0
+[2025-11-18 18:12:39] INFO   : Process started: cat_0 PID: 26124
+[2025-11-18 18:13:02] INFO   : Process now running: cat_0
+[2025-11-18 18:13:23] INFO   : Shutting down taskmaster
+[2025-11-18 18:13:23] INFO   : Shutting down process manager
+[2025-11-18 18:13:23] INFO   : Stopping all processes
+[2025-11-18 18:13:23] INFO   : Stopping program: cat
+[2025-11-18 18:13:23] INFO   : Stopping process: cat_0
+[2025-11-18 18:13:23] INFO   : Sending signal SIGTERM to process: cat_0
+[2025-11-18 18:13:23] INFO   : Killing process: cat_0
+[2025-11-18 18:13:23] INFO   : Taskmaster stopped

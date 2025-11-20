@@ -1,0 +1,256 @@
+(myenv) alevasse@alevasse-virtualbox:~/Documents/Supervisor-demo$ supervisord; supervisorctl 
+program1                         STOPPED   Not started
+program2                         STARTING  
+supervisor> start program1
+program1: started
+supervisor> status
+program1                         RUNNING   pid 14180, uptime 0:00:08
+program2                         RUNNING   pid 14179, uptime 0:00:10
+supervisor> stop program1
+program1: stopped
+supervisor> status program1
+program1                         STOPPED   Nov 17 04:59 PM
+supervisor> start program1 program2
+program1: started
+program2: ERROR (already started)
+supervisor> status program1 program2
+program1                         RUNNING   pid 14183, uptime 0:00:08
+program2                         RUNNING   pid 14179, uptime 0:00:36
+supervisor> stop program1 program2
+program1: stopped
+program2: stopped
+supervisor> status all
+program1                         STOPPED   Nov 17 04:59 PM
+program2                         STOPPED   Nov 17 04:59 PM
+supervisor> start allstop all
+program1: started
+program2: started
+supervisor> stop all
+program1: stopped
+program2: stopped
+supervisor> stop
+Error: stop requires a process name
+stop <name>             Stop a process
+stop <gname>:*          Stop all processes in a group
+stop <name> <name>      Stop multiple processes or groups
+stop all                Stop all processes
+supervisor> start
+Error: start requires a process name
+start <name>            Start a process
+start <gname>:*         Start all processes in a group
+start <name> <name>     Start multiple processes or groups
+start all               Start all processes
+supervisor> start all
+program1: started
+program2: started
+supervisor> status all
+program1                         RUNNING   pid 14209, uptime 0:00:27
+program2                         RUNNING   pid 14210, uptime 0:00:27
+supervisor> status program_does_not_exist
+program_does_not_exist: ERROR (no such process)
+supervisor> status ""
+"": ERROR (no such process)
+supervisor> status !
+!: ERROR (no such process)
+supervisor> start ""
+"": ERROR (no such process)
+supervisor> start unknown
+unknown: ERROR (no such process)
+supervisor> start program1 unknown
+program1: ERROR (already started)
+unknown: ERROR (no such process)
+supervisor> start program1 ""
+program1: ERROR (already started)
+"": ERROR (no such process)
+supervisor> start 123
+123: ERROR (no such process)
+supervisor> start *
+*: ERROR (no such process)
+supervisor> 
+supervisor> stop unknown
+unknown: ERROR (no such process)
+supervisor> stop program1 unknown
+program1: stopped
+unknown: ERROR (no such process)
+supervisor> stop ""
+"": ERROR (no such process)
+supervisor> stop *
+*: ERROR (no such process)
+supervisor> restart program1
+program1: ERROR (not running)
+program1: started
+supervisor> restart program1 program2
+program1: stopped
+program2: stopped
+program1: started
+resprogram2: started
+supervisor> restart all
+program1: stopped
+program2: stopped
+program1: started
+program2: started
+supervisor> restart
+Error: restart requires a process name
+restart <name>          Restart a process
+restart <gname>:*       Restart all processes in a group
+restart <name> <name>   Restart multiple processes or groups
+restart all             Restart all processes
+Note: restart does not reread config files. For that, see reread and update.
+supervisor> restart unknown
+unknown: ERROR (no such process)
+unknown: ERROR (no such process)
+supervisor> restart program1 unknown
+program1: stopped
+unknown: ERROR (no such process)
+restart ""
+restart @
+program1: started
+unknown: ERROR (no such process)
+supervisor> restart ""
+"": ERROR (no such process)
+"": ERROR (no such process)
+supervisor> restart @
+@: ERROR (no such process)
+@: ERROR (no such process)
+supervisor> reload
+Really restart the remote supervisord process y/N? y
+Restarted supervisord
+supervisor> reload ""
+Error: reload accepts no arguments
+reload          Restart the remote supervisord.
+supervisor> reload all
+Error: reload accepts no arguments
+reload          Restart the remote supervisord.
+supervisor> reload unknown
+Error: reload accepts no arguments
+reload          Restart the remote supervisord.
+supervisor> help
+
+default commands (type help <topic>):
+=====================================
+add    exit      open  reload  restart   start   tail   
+avail  fg        pid   remove  shutdown  status  update 
+clear  maintail  quit  reread  signal    stop    version
+NOTE: On ne garde que reload restart start status quit et stop
+
+supervisor> help all
+*** No help on all
+supervisor> help start
+start <name>            Start a process
+start <gname>:*         Start all processes in a group
+start <name> <name>     Start multiple processes or groups
+start all               Start all processes
+supervisor> help stop
+stop <name>             Stop a process
+stop <gname>:*          Stop all processes in a group
+stop <name> <name>      Stop multiple processes or groups
+stop all                Stop all processes
+supervisor> help restart
+restart <name>          Restart a process
+restart <gname>:*       Restart all processes in a group
+restart <name> <name>   Restart multiple processes or groups
+restart all             Restart all processes
+Note: restart does not reread config files. For that, see reread and update.
+supervisor> help status
+status <name>           Get status for a single process
+status <gname>:*        Get status for all processes in a group
+status <name> <name>    Get status for multiple named processes
+status                  Get all process status info
+supervisor> help reload
+reload          Restart the remote supervisord.
+supervisor> help quit
+quit    Exit the supervisor shell.
+
+NOTE: pour les help on ne mettra pas ce qui concerne les gname car par gere
+
+On ajoute un nouveau program 'new_program' correct et on reload:
+supervisor> reload
+Really restart the remote supervisord process y/N? y
+Restarted supervisord
+supervisor> status
+new_program                      RUNNING   pid 14388, uptime 0:00:02
+program1                         STOPPED   Not started
+program2                         STARTING  
+supervisor> start new_program
+new_program: ERROR (already started)
+supervisor> stop new_program
+new_program: stopped
+supervisor> status new_program
+new_program                      STOPPED   Nov 17 05:12 PM
+supervisor> start new_program
+new_program: started
+
+On test avec un binaire inexistant:
+supervisor> reload
+Really restart the remote supervisord process y/N? y
+Restarted supervisord
+supervisor> start bad_binary
+bad_binary: ERROR (no such file)
+supervisor> status bad_binary
+bad_binary                       BACKOFF   can't find command '/bin/doesnotexist'
+supervisor> restart bad_binary
+bad_binary: ERROR (not running)
+bad_binary: ERROR (no such file)
+supervisor> start all
+bad_binary: ERROR (no such file)
+program1: started
+supervisor> status
+bad_binary                       FATAL     can't find command '/bin/doesnotexist'
+program1                         RUNNING   pid 14727, uptime 0:00:08
+program2                         RUNNING   pid 14724, uptime 0:00:50
+supervisor> restart all
+program1: stopped
+program2: stopped
+bad_binary: ERROR (no such file)
+program1: started
+program2: started
+supervisor> status
+bad_binary                       FATAL     can't find command '/bin/doesnotexist'
+program1                         RUNNING   pid 14731, uptime 0:00:07
+program2                         RUNNING   pid 14732, uptime 0:00:07
+
+On test avec un binaire existant mais de mauvais arguments:
+supervisor> reload
+Really restart the remote supervisord process y/N? y
+Restarted supervisord
+supervisor> start sleep_bad_args
+sleep_bad_args: ERROR (already started)
+supervisor> status sleep_bad_args
+sleep_bad_args                   BACKOFF   Exited too quickly (process log may have details)
+supervisor> restart sleep_bad_args
+sleep_bad_args: ERROR (not running)
+sleep_bad_args: ERROR (spawn error)
+supervisor> start sleep_bad_args
+sleep_bad_args: ERROR (spawn error)
+supervisor> status sleep_bad_args
+sleep_bad_args                   BACKOFF   Exited too quickly (process log may have details)
+supervisor> status sleep_bad_args
+sleep_bad_args                   FATAL     Exited too quickly (process log may have details)
+NOTE: ici il semble que le program demarre mais l'erreur d'argument empeche de passer le programme en running et fini en FAIL apres avoir atteint max retries
+supervisor> help
+
+default commands (type help <topic>):
+=====================================
+reload  restart  start  status  update 
+quit    stop
+
+supervisor> help reload 
+reload          Restart the remote supervisord.
+supervisor> help restart 
+restart <name>          Restart a process
+restart <name> <name>   Restart multiple processes or groups
+restart all             Restart all processes
+supervisor> help start
+start <name>            Start a process
+start <name> <name>     Start multiple processes or groups
+start all               Start all processes
+supervisor> help status
+status <name>           Get status for a single process
+status <name> <name>    Get status for multiple named processes
+status                  Get all process status info
+supervisor> help quit
+quit    Exit the supervisor shell.
+supervisor> help stop
+stop <name>             Stop a process
+stop <name> <name>      Stop multiple processes or groups
+stop all                Stop all processes

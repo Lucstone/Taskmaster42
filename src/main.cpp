@@ -1,90 +1,124 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/14 06:36:30 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/11/05 06:45:45 by lnaidu           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
+#include "config/ConfigParser.hpp"
+#include "config/ProgramConfig.hpp"
+#include "process/ProcessManager.hpp"
+#include "shell/Shell.hpp"
+#include "shell/CommandHandler.hpp"
+#include "signal/SignalHandler.hpp"
+#include "logger/Logger.hpp"
+#include "utils/ArgsParser.hpp"
+#include "utils/Utils.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
-#include <readline/readline.h>
-#include <readline/history.h>
+#include <unistd.h>
 
-#include "ProcessManager.hpp"
-#include "Helper.hpp"
-
-const std::vector<std::string> COMMANDS = {
-    "status", "start", "stop", "restart", "reload", "quit", "help"
-};
-
-char* command_generator(const char* text, int state) {
-    static size_t index, len;
-    if (!state) { index = 0; len = strlen(text); }
-    while (index < COMMANDS.size()) {
-        const std::string& cmd = COMMANDS[index++];
-        if (cmd.compare(0, len, text) == 0) return strdup(cmd.c_str());
-    }
-    return nullptr;
-}
-
-char** completer(const char* text, int start, int end) {
-    (void)start; (void)end;
-    return rl_completion_matches(text, command_generator);
-}
-
-std::vector<std::string> split(const std::string& line) {
-    std::vector<std::string> args;
-    std::string cur;
-    for (char c : line) {
-        if (isspace(c)) { if (!cur.empty()) { args.push_back(cur); cur.clear(); } }
-        else cur.push_back(c);
-    }
-    if (!cur.empty()) args.push_back(cur);
-    return args;
-}
-
-int main() {
-    Helper          hm;
-    ProcessManager  pm;
-
-    pm.loadConfig("config.yaml");
-    pm.printStatus();
-
-    rl_catch_signals = 0;
-    rl_attempted_completion_function = completer;
-
-    while (true) {
-        char* input = readline("taskmaster> ");
-        if (!input) break;
-
-        std::string line(input);
-        free(input);
-
-        if (line.empty()) continue;
-        add_history(line.c_str());
-
-        auto args = split(line);
-        const std::string& cmd = args[0];
-
+class Taskmaster {
+private:
+    std::string     _config_file;
+    ConfigParser    _config_parser;
+    ProcessManager  _process_manager;
+    CommandHandler  _command_handler;
+    Shell           _shell;
+    bool            _running;
+    
+    void loadConfiguration() {
+        LOG_INFO("Loading configuration from: " + _config_file);
+        
         try {
-            if (cmd == "quit") break;
-            else if (cmd == "help") hm.handle(args);
-            else if (cmd == "status") pm.handle_status(args);
-            else if (cmd == "start") pm.handle_start(args);
-            else if (cmd == "stop") pm.handle_stop(args);
-            else if (cmd == "restart") pm.handle_restart(args);
-            else if (cmd == "reload") pm.handle_reload();
-            else std::cout << "*** Unknown syntax: " << cmd << "\n";
+            std::map<std::string, ProgramConfig> configs = _config_parser.parse(_config_file);
+            //_config_parser.printConfigs(configs);
+            _process_manager.loadConfig(configs);
+            LOG_INFO("Configuration loaded successfully");
         } catch (const std::exception& e) {
-            std::cerr << "Error: " << e.what() << "\n";
+            LOG_ERROR(std::string("Failed to load configuration: ") + e.what());
+            throw;
         }
     }
 
-    return 0;
+    void reloadConfiguration() {
+        LOG_INFO("Reloading configuration");
+        
+        try {
+            std::map<std::string, ProgramConfig> new_configs = _config_parser.parse(_config_file);
+            _process_manager.reloadConfig(new_configs);
+            LOG_INFO("Configuration reloaded successfully");
+            std::cout << "taskmaster: configuration reloaded\n";
+        } catch (const std::exception& e) {
+            LOG_ERROR(std::string("Failed to reload configuration: ") + e.what());
+            std::cerr << "taskmaster: ERROR - Failed to reload configuration\n";
+        }
+    }
+
+    void shutdown() {
+        LOG_INFO("Shutting down taskmaster");
+        std::cout << "taskmaster: shutting down...\n";
+        
+        _process_manager.shutdown();
+        
+        std::cout << "taskmaster: stopped\n";
+        LOG_INFO("Taskmaster stopped");
+    }
+
+public:
+    Taskmaster(const std::string& config_file)
+        : _config_file(config_file),
+          _config_parser(config_file),
+          _process_manager(),
+          _command_handler(&_process_manager),
+          _shell(&_command_handler),
+          _running(true) {
+    }
+    
+    ~Taskmaster() { }
+    
+    void run() {
+        SignalHandler::setup();
+        LOG_INFO("Signal handlers initialized");
+        
+        loadConfiguration();
+        
+        _process_manager.startAutostart();
+        LOG_INFO("Autostart programs launched");
+        
+        std::cout << "taskmaster: started\n";
+        
+        _shell.setReloadCallback([this]() {
+            this->reloadConfiguration();
+        });
+
+        _shell.run();
+        shutdown();
+    }
+};
+
+int main(int argc, char* argv[]) {
+    std::string config_file = parseArguments(argc, argv);
+    
+    if (config_file.empty()) {
+        return 1;
+    }
+
+    try {
+        if (!Utils::fileExists("logs")) {
+            Utils::createDirectory("logs");
+        }
+
+        Logger::getInstance("logs/taskmaster.log")->setMinLevel(LogLevel::DEBUG);
+        LOG_INFO("========================================");
+        LOG_INFO("Taskmaster starting");
+        LOG_INFO("========================================");
+        
+        Taskmaster taskmaster(config_file);
+        taskmaster.run();
+        
+        Logger::destroyInstance();
+        
+        return 0;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "taskmaster: FATAL ERROR - " << e.what() << "\n";
+        LOG_ERROR(std::string("Fatal error: ") + e.what());
+        Logger::destroyInstance();
+        return 1;
+    }
 }

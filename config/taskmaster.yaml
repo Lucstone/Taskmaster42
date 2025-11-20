@@ -1,0 +1,19 @@
+programs:
+  cat:
+    cmd: "/bin/cat"
+    numprocs: 1
+    umask: 022
+    workingdir: /tmp
+    autostart: true
+    autorestart: unexpected
+    exitcodes:
+      - 0
+    startretries: 2
+    starttime: 10
+    stopsignal: TERM
+    stoptime: 5
+    stdout: /tmp/cat_demo.stdout
+    stderr: /tmp/cat_demo.stderr
+    env:
+      STARTED_BY: taskmaster
+      MODE: demo
