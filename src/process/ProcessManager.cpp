@@ -1,3 +1,7 @@
+// ============================================
+// src/process/ProcessManager.cpp - COMPLETE IMPLEMENTATION
+// ============================================
+
 #include "ProcessManager.hpp"
 #include "../logger/Logger.hpp"
 #include "../utils/Utils.hpp"
@@ -92,120 +96,208 @@ void ProcessManager::startAutostart() {
 StartResult ProcessManager::startProgram(const std::string& name) {
     LOG_INFO("Starting program: " + name);
     
-    // Find program
-    std::map<std::string, std::vector<Process*> >::iterator it = _processes.find(name);
-    if (it == _processes.end()) {
-        return START_NO_SUCH_PROCESS;
-    }
+    // Check if it's a program name (group) or instance name
+    std::map<std::string, std::vector<Process*> >::iterator prog_it = _processes.find(name);
     
-    bool any_started = false;
-    bool already_running = false;
-    bool spawn_error = false;
-    bool no_such_file = false;
-    
-    // Start all instances
-    for (size_t i = 0; i < it->second.size(); ++i) {
-        Process* proc = it->second[i];
+    if (prog_it != _processes.end()) {
+        // It's a program name - start all instances
+        bool any_started = false;
+        bool already_running = false;
+        bool spawn_error = false;
+        bool no_such_file = false;
         
-        if (proc->isRunning()) {
-            already_running = true;
-            continue;
+        for (size_t i = 0; i < prog_it->second.size(); ++i) {
+            Process* proc = prog_it->second[i];
+            
+            if (proc->isRunning()) {
+                already_running = true;
+                continue;
+            }
+            
+            if (proc->start()) {
+                any_started = true;
+            } else {
+                if (proc->getState() == ProcessState::BACKOFF) {
+                    no_such_file = true;
+                } else {
+                    spawn_error = true;
+                }
+            }
         }
         
-        if (proc->start()) {
-            any_started = true;
-        } else {
-            // Check state to determine error type
-            if (proc->getState() == ProcessState::BACKOFF) {
-                no_such_file = true;
-            } else {
-                spawn_error = true;
+        if (already_running && !any_started) {
+            return START_ALREADY_STARTED;
+        }
+        if (no_such_file) {
+            return START_NO_SUCH_FILE;
+        }
+        if (spawn_error) {
+            return START_SPAWN_ERROR;
+        }
+        
+        return START_SUCCESS;
+    }
+    
+    // Not a program name - check if it's an instance name
+    for (std::map<std::string, std::vector<Process*> >::iterator it = _processes.begin();
+         it != _processes.end(); ++it) {
+        for (size_t i = 0; i < it->second.size(); ++i) {
+            Process* proc = it->second[i];
+            
+            if (proc->getName() == name) {
+                // Found the specific instance
+                if (proc->isRunning()) {
+                    return START_ALREADY_STARTED;
+                }
+                
+                if (proc->start()) {
+                    return START_SUCCESS;
+                } else {
+                    if (proc->getState() == ProcessState::BACKOFF) {
+                        return START_NO_SUCH_FILE;
+                    } else {
+                        return START_SPAWN_ERROR;
+                    }
+                }
             }
         }
     }
     
-    // Determine result
-    if (already_running && !any_started) {
-        return START_ALREADY_STARTED;
-    }
-    if (no_such_file) {
-        return START_NO_SUCH_FILE;
-    }
-    if (spawn_error) {
-        return START_SPAWN_ERROR;
-    }
-    
-    return START_SUCCESS;
+    // Not found at all
+    return START_NO_SUCH_PROCESS;
 }
 
 StopResult ProcessManager::stopProgram(const std::string& name) {
     LOG_INFO("Stopping program: " + name);
     
-    // Find program
-    std::map<std::string, std::vector<Process*> >::iterator it = _processes.find(name);
-    if (it == _processes.end()) {
-        return STOP_NO_SUCH_PROCESS;
+    // Check if it's a program name (group)
+    std::map<std::string, std::vector<Process*> >::iterator prog_it = _processes.find(name);
+    
+    if (prog_it != _processes.end()) {
+        // Special case: if numprocs > 1, supervisor returns error "no such process"
+        // because you must specify the full instance name (e.g., "cat_00")
+        if (prog_it->second.size() > 1) {
+            return STOP_NO_SUCH_PROCESS;
+        }
+        
+        // numprocs == 1, stop the single instance
+        bool any_running = false;
+        for (size_t i = 0; i < prog_it->second.size(); ++i) {
+            Process* proc = prog_it->second[i];
+            if (proc->isRunning()) {
+                any_running = true;
+                proc->stop();
+            }
+        }
+        
+        if (!any_running) {
+            return STOP_NOT_RUNNING;
+        }
+        
+        return STOP_SUCCESS;
     }
     
-    bool any_running = false;
-    
-    // Stop all instances
-    for (size_t i = 0; i < it->second.size(); ++i) {
-        Process* proc = it->second[i];
-        
-        if (proc->isRunning()) {
-            any_running = true;
-            proc->stop();
+    // Not a program name - check if it's an instance name
+    for (std::map<std::string, std::vector<Process*> >::iterator it = _processes.begin();
+         it != _processes.end(); ++it) {
+        for (size_t i = 0; i < it->second.size(); ++i) {
+            Process* proc = it->second[i];
+            
+            if (proc->getName() == name) {
+                // Found the specific instance
+                if (!proc->isRunning()) {
+                    return STOP_NOT_RUNNING;
+                }
+                
+                proc->stop();
+                return STOP_SUCCESS;
+            }
         }
     }
     
-    if (!any_running) {
-        return STOP_NOT_RUNNING;
-    }
-    
-    return STOP_SUCCESS;
+    // Not found at all
+    return STOP_NO_SUCH_PROCESS;
 }
 
 RestartResult ProcessManager::restartProgram(const std::string& name) {
     LOG_INFO("Restarting program: " + name);
     
-    // Find program
-    std::map<std::string, std::vector<Process*> >::iterator it = _processes.find(name);
-    if (it == _processes.end()) {
-        return RESTART_NO_SUCH_PROCESS;
-    }
+    // Check if it's a program name (group)
+    std::map<std::string, std::vector<Process*> >::iterator prog_it = _processes.find(name);
     
-    bool was_running = false;
-    
-    // Restart all instances
-    for (size_t i = 0; i < it->second.size(); ++i) {
-        Process* proc = it->second[i];
-        
-        if (proc->isRunning()) {
-            was_running = true;
-            std::cout << proc->getProgramName() << ": stopped\n";
-            proc->stop();
-            // Small delay for graceful stop
-            sleep(1);
+    if (prog_it != _processes.end()) {
+        // Special case: if numprocs > 1, supervisor returns error
+        if (prog_it->second.size() > 1) {
+            return RESTART_NO_SUCH_PROCESS;
         }
         
-        if (proc->start()) {
-            std::cout << proc->getProgramName() << ": started\n";
-        } else {
-            // Check error type
-            if (proc->getState() == ProcessState::BACKOFF) {
-                return RESTART_NO_SUCH_FILE;
+        // numprocs == 1, restart the single instance
+        bool was_running = false;
+        
+        for (size_t i = 0; i < prog_it->second.size(); ++i) {
+            Process* proc = prog_it->second[i];
+            
+            if (proc->isRunning()) {
+                was_running = true;
+                std::cout << proc->getName() << ": stopped\n";
+                proc->stop();
+                sleep(1);
+            }
+            
+            if (proc->start()) {
+                std::cout << proc->getName() << ": started\n";
             } else {
-                return RESTART_SPAWN_ERROR;
+                if (proc->getState() == ProcessState::BACKOFF) {
+                    return RESTART_NO_SUCH_FILE;
+                } else {
+                    return RESTART_SPAWN_ERROR;
+                }
+            }
+        }
+        
+        if (!was_running) {
+            return RESTART_NOT_RUNNING_STARTED;
+        }
+        
+        return RESTART_SUCCESS;
+    }
+    
+    // Not a program name - check if it's an instance name
+    for (std::map<std::string, std::vector<Process*> >::iterator it = _processes.begin();
+         it != _processes.end(); ++it) {
+        for (size_t i = 0; i < it->second.size(); ++i) {
+            Process* proc = it->second[i];
+            
+            if (proc->getName() == name) {
+                // Found the specific instance
+                bool was_running = proc->isRunning();
+                
+                if (was_running) {
+                    std::cout << proc->getName() << ": stopped\n";
+                    proc->stop();
+                    sleep(1);
+                }
+                
+                if (proc->start()) {
+                    std::cout << proc->getName() << ": started\n";
+                    
+                    if (!was_running) {
+                        return RESTART_NOT_RUNNING_STARTED;
+                    }
+                    return RESTART_SUCCESS;
+                } else {
+                    if (proc->getState() == ProcessState::BACKOFF) {
+                        return RESTART_NO_SUCH_FILE;
+                    } else {
+                        return RESTART_SPAWN_ERROR;
+                    }
+                }
             }
         }
     }
     
-    if (!was_running) {
-        return RESTART_NOT_RUNNING_STARTED;
-    }
-    
-    return RESTART_SUCCESS;
+    // Not found at all
+    return RESTART_NO_SUCH_PROCESS;
 }
 
 void ProcessManager::handleSigchld() {
@@ -245,7 +337,15 @@ std::vector<std::string> ProcessManager::getProgramNames() const {
     
     for (std::map<std::string, std::vector<Process*> >::const_iterator it = _processes.begin();
          it != _processes.end(); ++it) {
-        names.push_back(it->first);
+        // If numprocs == 1, add program name only
+        if (it->second.size() == 1) {
+            names.push_back(it->first);
+        } else {
+            // If numprocs > 1, add all instance names
+            for (size_t i = 0; i < it->second.size(); ++i) {
+                names.push_back(it->second[i]->getName());
+            }
+        }
     }
     
     return names;
@@ -425,18 +525,95 @@ void ProcessManager::stopAllProcesses() {
 
 void ProcessManager::shutdown() {
     LOG_INFO("Shutting down process manager");
-    stopAllProcesses();
     
-    // Wait a bit for graceful shutdown
-    sleep(2);
-    
-    // Force kill any remaining processes
+    // Step 1: Send stop signals to all running processes
+    LOG_INFO("Sending stop signals to all processes");
     for (std::map<std::string, std::vector<Process*> >::iterator it = _processes.begin();
          it != _processes.end(); ++it) {
         for (size_t i = 0; i < it->second.size(); ++i) {
-            it->second[i]->kill();
+            Process* proc = it->second[i];
+            if (proc->isRunning()) {
+                proc->stop();  // Sets state to STOPPING and sends signal
+            }
         }
     }
+    
+    // Step 2: Wait for processes to exit gracefully
+    // Check every 100ms for up to the maximum stoptime among all processes
+    int max_stoptime = 0;
+    for (std::map<std::string, ProgramConfig>::const_iterator it = _current_config.begin();
+         it != _current_config.end(); ++it) {
+        if (it->second.getStoptime() > max_stoptime) {
+            max_stoptime = it->second.getStoptime();
+        }
+    }
+    
+    LOG_INFO("Waiting up to " + std::to_string(max_stoptime) + " seconds for processes to stop");
+    
+    time_t start_wait = time(NULL);
+    bool all_stopped = false;
+    
+    while (!all_stopped && (time(NULL) - start_wait) < max_stoptime) {
+        // Reap any dead processes
+        int status;
+        pid_t pid;
+        while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
+            // Find and notify process
+            for (std::map<std::string, std::vector<Process*> >::iterator it = _processes.begin();
+                 it != _processes.end(); ++it) {
+                for (size_t i = 0; i < it->second.size(); ++i) {
+                    if (it->second[i]->getPid() == pid) {
+                        it->second[i]->handleProcessExit(status);
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Check if all processes are stopped
+        all_stopped = true;
+        for (std::map<std::string, std::vector<Process*> >::iterator it = _processes.begin();
+             it != _processes.end(); ++it) {
+            for (size_t i = 0; i < it->second.size(); ++i) {
+                Process* proc = it->second[i];
+                
+                // Update state (handles STOPPING -> SIGKILL timeout)
+                proc->updateState();
+                
+                if (proc->getState() == ProcessState::STOPPING) {
+                    all_stopped = false;
+                }
+            }
+        }
+        
+        if (!all_stopped) {
+            usleep(100000);  // Sleep 100ms
+        }
+    }
+    
+    // Step 3: Force kill any remaining processes
+    int remaining = 0;
+    for (std::map<std::string, std::vector<Process*> >::iterator it = _processes.begin();
+         it != _processes.end(); ++it) {
+        for (size_t i = 0; i < it->second.size(); ++i) {
+            Process* proc = it->second[i];
+            if (proc->getPid() > 0) {
+                LOG_WARNING("Force killing process: " + proc->getName());
+                proc->kill();
+                remaining++;
+            }
+        }
+    }
+    
+    if (remaining > 0) {
+        LOG_INFO("Force killed " + std::to_string(remaining) + " processes");
+        // Final reap
+        while (waitpid(-1, NULL, WNOHANG) > 0) {
+            // Just reap zombies
+        }
+    }
+    
+    LOG_INFO("All processes stopped");
 }
 
 std::vector<std::string> ProcessManager::getStatusReport() const {

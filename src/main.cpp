@@ -79,8 +79,8 @@ public:
         
         _process_manager.startAutostart();
         LOG_INFO("Autostart programs launched");
-        
-        std::cout << "taskmaster: started\n";
+
+        _command_handler.status({ "all" });
         
         _shell.setReloadCallback([this]() {
             this->reloadConfiguration();

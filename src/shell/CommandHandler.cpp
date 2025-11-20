@@ -52,24 +52,6 @@ bool CommandHandler::execute(const std::string& cmd_line) {
     
     std::string command = args[0];
     
-    // Check for command with garbage after (e.g., "quitanything")
-    // Supervisor accepts these, so we need to check if command starts with valid command
-    if (command.find("quit") == 0 && command != "quit") {
-        command = "quit";
-    } else if (command.find("help") == 0 && command != "help") {
-        command = "help";
-    } else if (command.find("status") == 0 && command != "status") {
-        command = "status";
-    } else if (command.find("start") == 0 && command != "start") {
-        command = "start";
-    } else if (command.find("stop") == 0 && command != "stop") {
-        command = "stop";
-    } else if (command.find("restart") == 0 && command != "restart") {
-        command = "restart";
-    } else if (command.find("reload") == 0 && command != "reload") {
-        command = "reload";
-    }
-    
     // Dispatch to appropriate command handler
     if (command == "status") {
         status(args);

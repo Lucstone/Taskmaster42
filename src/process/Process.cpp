@@ -31,10 +31,18 @@ Process::Process(const ProgramConfig& config, int instance_num)
       _restart_count(0),
       _exit_code(0),
       _stop_time(0) {
-    
-    std::ostringstream oss;
-    oss << config.getName() << "_" << instance_num;
-    _instance_name = oss.str();
+    if (config.getNumprocs() == 1) {
+        _instance_name = config.getName();
+    } else {
+        std::ostringstream oss;
+
+        if (instance_num < 10) {
+            oss << config.getName() << "_0" << instance_num;
+        } else {
+            oss << config.getName() << "_" << instance_num;
+        }
+        _instance_name = oss.str();
+    }
 }
 
 Process::Process(const Process& other)
@@ -300,22 +308,35 @@ void Process::updateState() {
     // STARTING -> RUNNING if starttime elapsed
     if (_state == ProcessState::STARTING && hasRunLongEnough()) {
         _state = ProcessState::RUNNING;
+        _restart_count = 0;
         LOG_INFO("Process now running: " + _instance_name);
     }
     
     // STOPPING -> SIGKILL if stoptime elapsed
-    if (_state == ProcessState::STOPPING) {
+    if (_state == ProcessState::STOPPING && _pid > 0) {
         time_t elapsed = time(NULL) - _stop_time;
         if (elapsed >= _config.getStoptime()) {
             LOG_WARNING("Process stop timeout, sending SIGKILL: " + _instance_name);
             kill();
         }
     }
-    
-    // BACKOFF -> Start retry
+
+    // STOPPING -> SIGKILL if stoptime elapsed
+    if (_state == ProcessState::STOPPING && _pid > 0) {
+        time_t elapsed = time(NULL) - _stop_time;
+        if (elapsed >= _config.getStoptime()) {
+            LOG_WARNING("Process stop timeout (" + std::to_string(_config.getStoptime()) + 
+                       "s), sending SIGKILL: " + _instance_name);
+            kill();
+        }
+    }
+
+    // BACKOFF -> Start retry (could add delay here if needed)
     if (_state == ProcessState::BACKOFF) {
-        // Wait a bit before retry (could add exponential backoff here)
-        // For now, immediate retry
+        // Immediate retry for now
+        // You could add: if (time_since_last_attempt > backoff_delay)
+        LOG_INFO("Retrying start (attempt " + std::to_string(_restart_count + 1) + 
+                "): " + _instance_name);
         start();
     }
 }

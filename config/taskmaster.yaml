@@ -11,7 +11,7 @@ programs:
     startretries: 2
     starttime: 10
     stopsignal: TERM
-    stoptime: 5
+    stoptime: 20
     stdout: /tmp/cat_demo.stdout
     stderr: /tmp/cat_demo.stderr
     env:

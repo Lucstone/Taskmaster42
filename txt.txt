@@ -254,3 +254,83 @@ supervisor> help stop
 stop <name>             Stop a process
 stop <name> <name>      Stop multiple processes or groups
 stop all                Stop all processes
+
+
+Regarde attentivement comment se comporte supervisor lorsque procnums est superieur a 1, que ce soit au niveau des nom des process ainsi qu'au fonctionnement de l'autocompletion:
+supervisor> status
+cat:cat_00                       RUNNING   pid 4801, uptime 0:02:18
+cat:cat_01                       RUNNING   pid 3947, uptime 0:39:43
+cat:cat_02                       RUNNING   pid 3948, uptime 0:39:43
+supervisor> stop cat
+cat: ERROR (no such process)
+
+Et ensuite si par exemple je kill un des 3 process, alors supervisor le relance et il devient starting puis running:
+supervisor> status
+cat:cat_00                       RUNNING   pid 3946, uptime 0:37:12
+cat:cat_01                       RUNNING   pid 3947, uptime 0:37:12
+cat:cat_02                       RUNNING   pid 3948, uptime 0:37:12
+supervisor> status
+cat:cat_00                       STARTING  
+cat:cat_01                       RUNNING   pid 3947, uptime 0:37:27
+cat:cat_02                       RUNNING   pid 3948, uptime 0:37:27
+supervisor> status
+cat:cat_00                       RUNNING   pid 4801, uptime 0:02:18
+cat:cat_01                       RUNNING   pid 3947, uptime 0:39:43
+cat:cat_02                       RUNNING   pid 3948, uptime 0:39:43
+
+De mon cote pour taskmaster, j'ai change la logique en fonction de procnums, s'il est a 1 ou a 2 ou plus:
+Process::Process(const ProgramConfig& config, int instance_num)
+    : _config(config),
+      _instance_name(""),
+      _state(ProcessState::STOPPED),
+      _pid(-1),
+      _start_time(0),
+      _restart_count(0),
+      _exit_code(0),
+      _stop_time(0) {
+    if (config.getNumprocs() == 1) {
+        _instance_name = config.getName();
+    } else {
+        std::ostringstream oss;
+        if (instance_num < 10) {
+            oss << config.getName() << "_0" << instance_num;
+        } else {
+            oss << config.getName() << "_" << instance_num;
+        }
+        _instance_name = oss.str();
+    }
+}
+
+Je reproduit ici le comportement de supervisor de maniere minimaliste, les process ont un identifiant mais la syntaxe pour la numerotation des process est fix.
+
+Je remarque que dans taskmaster l'auto completion pour un program qui a plusieur process fonctionne differement que supervisor:
+taskmaster> status cat 
+
+alors que supervisor:
+supervisor> status cat:
+cat:*        cat:cat_00   cat:cat_01   cat:cat_02  
+
+De plus si je stop cat dans taskmaster avec plusieur procnums:
+taskmaster> status 
+cat_00                           STOPPING
+cat_01                           STOPPING
+cat_02                           STOPPING
+
+Alors que dans supervisor:
+supervisor> stop cat
+cat: ERROR (no such process)
+
+En prenant ces difference en consideration, propose une solution qui me permet d'imiter le comportement de supervisor tout en gardant ma maniere d'attribuer les identifiants au process lorsque procnums > 1:
+    if (config.getNumprocs() == 1) {
+        _instance_name = config.getName();
+    } else {
+        std::ostringstream oss;
+        if (instance_num < 10) {
+            oss << config.getName() << "_0" << instance_num;
+        } else {
+            oss << config.getName() << "_" << instance_num;
+        }
+        _instance_name = oss.str();
+    }
+
+Si procnums=1 alors le process = nom du programme

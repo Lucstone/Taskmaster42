@@ -9,13 +9,13 @@
 class Process {
 private:
     ProgramConfig _config;
-    std::string _instance_name; // e.g., "ls_cat_0" for first instance
+    std::string _instance_name;
     ProcessState _state;
     pid_t _pid;
     time_t _start_time;
     int _restart_count;
     int _exit_code;
-    time_t _stop_time; // When stop signal was sent
+    time_t _stop_time;
     
     // Internal methods
     bool forkAndExec();
