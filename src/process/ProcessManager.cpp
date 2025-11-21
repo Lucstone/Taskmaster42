@@ -1,7 +1,3 @@
-// ============================================
-// src/process/ProcessManager.cpp - COMPLETE IMPLEMENTATION
-// ============================================
-
 #include "ProcessManager.hpp"
 #include "../logger/Logger.hpp"
 #include "../utils/Utils.hpp"

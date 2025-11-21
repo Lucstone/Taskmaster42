@@ -109,7 +109,6 @@ bool Process::forkAndExec() {
     int stdin_pipe[2];
 
     if (pipe(stdin_pipe) != 0) {
-        LOG_ERROR("Failed to create stdin pipe: " + std::string(strerror(errno)));
         return false;
     }
 
@@ -310,15 +309,6 @@ void Process::updateState() {
         _state = ProcessState::RUNNING;
         _restart_count = 0;
         LOG_INFO("Process now running: " + _instance_name);
-    }
-    
-    // STOPPING -> SIGKILL if stoptime elapsed
-    if (_state == ProcessState::STOPPING && _pid > 0) {
-        time_t elapsed = time(NULL) - _stop_time;
-        if (elapsed >= _config.getStoptime()) {
-            LOG_WARNING("Process stop timeout, sending SIGKILL: " + _instance_name);
-            kill();
-        }
     }
 
     // STOPPING -> SIGKILL if stoptime elapsed
