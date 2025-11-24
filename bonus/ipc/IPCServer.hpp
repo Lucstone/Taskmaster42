@@ -6,37 +6,34 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 04:17:10 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/11/07 07:27:01 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/11/24 09:30:32 by lnaidu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
 #include <string>
-#include <functional>
 #include <vector>
-#include <stdexcept>
+#include <functional>
 
 class IPCServer {
 public:
-    // Handler: prend une commande (ligne SANS '\n'), renvoie des lignes de réponse (SANS '\n').
-    using Handler = std::function<std::vector<std::string>(const std::string& line)>;
+    // Handler: prend une ligne de commande, renvoie des lignes de réponses
+    using Handler = std::function<std::vector<std::string>(const std::string&)>;
 
-    // sockPath: ex. "/tmp/taskmaster.sock"
     IPCServer(const std::string& sockPath, Handler h);
+    IPCServer(const IPCServer& other);
+    IPCServer& operator=(const IPCServer& other);
     ~IPCServer();
 
-    // À appeler régulièrement (non bloquant) dans la boucle principale.
-    void                pollOnce();
-
-    // Non copiable
-    IPCServer(const IPCServer&) = delete;
-    IPCServer& operator=(const IPCServer&) = delete;
+    // À appeler régulièrement dans la boucle du daemon (non bloquant).
+    void pollOnce();
 
 private:
-    std::string         _sockPath;
-    int                 _listenFd;
-    Handler             _handler;
+    std::string _sockPath;
+    int         _listenFd;
+    Handler     _handler;
 
-    void                setupSocket_();
-    void                cleanup_();
+    void setupSocket_();
+    void cleanup_();
 };
