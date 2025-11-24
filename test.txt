@@ -1,0 +1,22 @@
+stopwaitsecs -> stoptime
+
+#include <signal.h>
+#include <unistd.h>
+#include <stdio.h>
+
+void handler(int sig) {
+    // Ignore SIGTERM
+    if (sig == SIGTERM) {
+        write(1, "Ignored SIGTERM\n", 16);
+    }
+}
+
+int main() {
+    signal(SIGTERM, handler);
+    while (1) {
+        sleep(1);
+    }
+}
+
+gcc ignore_term.c -o ignore_term
+

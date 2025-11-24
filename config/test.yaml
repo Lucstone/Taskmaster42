@@ -1,0 +1,85 @@
+programs:
+  # Simple sleep program
+  sleep_test:
+    cmd: "/bin/sleep 30"
+    numprocs: 1
+    umask: 022
+    workingdir: /tmp
+    autostart: true
+    autorestart: unexpected
+    exitcodes:
+      - 0
+    startretries: 3
+    starttime: 2
+    stopsignal: TERM
+    stoptime: 5
+    stdout: /tmp/sleep_test.stdout
+    stderr: /tmp/sleep_test.stderr
+    env:
+      STARTED_BY: taskmaster
+      MODE: test
+
+  # Cat program (stays running, waits for input)
+  cat_demo:
+    cmd: "/bin/cat"
+    numprocs: 1
+    umask: 022
+    workingdir: /tmp
+    autostart: true
+    autorestart: unexpected
+    exitcodes:
+      - 0
+    startretries: 2
+    starttime: 2
+    stopsignal: TERM
+    stoptime: 5
+    stdout: /tmp/cat_demo.stdout
+    stderr: /tmp/cat_demo.stderr
+    env:
+      STARTED_BY: taskmaster
+      MODE: demo
+
+  # Program that doesn't autostart
+  manual_start:
+    cmd: "/bin/sleep 60"
+    numprocs: 1
+    umask: 077
+    workingdir: /tmp
+    autostart: false
+    autorestart: always
+    exitcodes:
+      - 0
+    startretries: 5
+    starttime: 3
+    stopsignal: TERM
+    stoptime: 10
+    stdout: /tmp/manual_start.stdout
+    stderr: /tmp/manual_start.stderr
+    env:
+      STARTED_BY: taskmaster
+      TYPE: manual
+
+  # Program with multiple instances
+  multi_instance:
+    cmd: "/bin/sleep 100"
+    numprocs: 3
+    umask: 022
+    workingdir: /tmp
+    autostart: true
+    autorestart: unexpected
+    exitcodes:
+      - 0
+      - 2
+    startretries: 3
+    starttime: 1
+    stopsignal: TERM
+    stoptime: 5
+    stdout: /tmp/multi_instance.stdout
+    stderr: /tmp/multi_instance.stderr
+    env:
+      STARTED_BY: taskmaster
+      MODE: multi
+
+# Test with minimal configuration (using defaults)
+  minimal_program:
+    cmd: "/bin/sleep 10"

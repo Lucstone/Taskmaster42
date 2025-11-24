@@ -1,0 +1,19 @@
+programs:
+  test:
+    cmd: "/tmp/tm_test.sh"
+    numprocs: 1
+    umask: 077
+    workingdir: /var/tmp
+    autostart: false
+    autorestart: unexpected
+    exitcodes:
+      - 0
+    startretries: 2
+    starttime: 10
+    stopsignal: TERM
+    stoptime: 20
+    stdout: /tmp/tm_stdout.log
+    stderr: /tmp/tm_stderr.log
+    env:
+      STARTED_BY: taskmaster
+      MODE: demo
