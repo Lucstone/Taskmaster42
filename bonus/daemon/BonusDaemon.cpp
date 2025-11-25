@@ -6,7 +6,7 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 07:24:25 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/11/24 09:19:53 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/11/25 07:35:28 by lnaidu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,11 +84,17 @@ void BonusDaemon::shutdown()
     _running = false;
 }
 
-std::vector<std::string>
-BonusDaemon::handleCommand_(const std::string& line)
-{
-    std::stringstream buffer;
+std::vector<std::string> BonusDaemon::handleCommand_(const std::string& line) {
+    std::string trimmed = Utils::trim(line);
+    if (trimmed == "reload") {
+        std::vector<std::string> out;
+        out.push_back("Restarted supervisord");
+        reloadConfiguration();
+        return out;
+    }
 
+    //on capture stdout/stderr et on laisse CommandHandler bosser
+    std::stringstream buffer;
     std::streambuf* oldCout = std::cout.rdbuf(buffer.rdbuf());
     std::streambuf* oldCerr = std::cerr.rdbuf(buffer.rdbuf());
 
@@ -97,6 +103,7 @@ BonusDaemon::handleCommand_(const std::string& line)
     std::cout.rdbuf(oldCout);
     std::cerr.rdbuf(oldCerr);
 
+    //Gestion éventuelle des flags du CommandHandler (sauf reload, déjà géré)
     if (_command_handler.needsReload()) {
         _command_handler.clearReload();
         reloadConfiguration();
@@ -107,16 +114,18 @@ BonusDaemon::handleCommand_(const std::string& line)
         shutdown();
     }
 
+    // Récupérer ce que la commande a écrit
     std::vector<std::string> out;
     std::string tmp;
-    while (std::getline(buffer, tmp))
+    while (std::getline(buffer, tmp)) {
         out.push_back(tmp);
-
+    }
     if (out.empty())
         out.push_back("");
 
     return out;
 }
+
 
 void BonusDaemon::run()
 {
@@ -124,8 +133,6 @@ void BonusDaemon::run()
 
     loadConfiguration();
     _process_manager.startAutostart();
-
-    // 🔥 Correction critique : synchro immédiate
     _process_manager.handleSigchld();
     _process_manager.update();
 
@@ -149,7 +156,7 @@ void BonusDaemon::run()
         _process_manager.update();
         _server.pollOnce();
 
-        usleep(10000);
+        usleep(1000);
     }
 
     _process_manager.shutdown();

@@ -6,7 +6,7 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 04:18:37 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/11/24 09:30:56 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/11/25 07:40:30 by lnaidu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,7 @@ IPCServer::IPCServer(const std::string& sockPath, Handler h)
 
 IPCServer::IPCServer(const IPCServer& other)
 : _sockPath(other._sockPath), _listenFd(-1), _handler(other._handler) {
-    // On ne duplique pas le FD, on crée un nouveau socket si besoin
-    setupSocket_();
+    setupSocket_(); //new socket pas de dup
 }
 
 IPCServer& IPCServer::operator=(const IPCServer& other) {
@@ -51,12 +50,11 @@ IPCServer& IPCServer::operator=(const IPCServer& other) {
 }
 
 IPCServer::~IPCServer() {
-    cleanup_();
+    cleanup_(); //supprime socket et nettoie le fichier
 }
 
 void IPCServer::setupSocket_() {
-    // Nettoyer un socket précédent
-    ::unlink(_sockPath.c_str());
+    ::unlink(_sockPath.c_str()); //suprime socket sans cleanup
 
     _listenFd = ::socket(AF_UNIX, SOCK_STREAM, 0);
     if (_listenFd < 0)
@@ -103,11 +101,9 @@ void IPCServer::pollOnce() {
     socklen_t   len = sizeof(cli);
     int         fd  = ::accept(_listenFd, (sockaddr*)&cli, &len);
     if (fd < 0) {
-        // Rien à accepter (non bloquant)
         return;
     }
 
-    // Lire une commande (jusqu'au '\n')
     std::string line;
     char        ch;
     while (true) {
@@ -117,11 +113,11 @@ void IPCServer::pollOnce() {
                 break;
             line.push_back(ch);
         } else {
-            if (n == 0)       // EOF
+            if (n == 0)       
                 break;
             if (errno == EAGAIN || errno == EWOULDBLOCK)
                 break;
-            break;            // erreur
+            break; 
         }
     }
 
@@ -133,7 +129,6 @@ void IPCServer::pollOnce() {
         out.push_back("ERR internal handler error");
     }
 
-    // Envoyer chaque ligne + une sentinelle "."
     for (std::vector<std::string>::const_iterator it = out.begin();
          it != out.end(); ++it) {
         (void)::write(fd, it->c_str(), it->size());

@@ -6,7 +6,7 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/07 02:06:35 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/11/24 07:38:08 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/11/25 07:01:21 by lnaidu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 
 static const char* DEFAULT_SOCKET_PATH = "/tmp/taskmaster.sock";
 
-// Recolle argv[i] en une seule chaîne (ex: "start test")
 static std::string joinArgs_(int argc, char* argv[], int start) {
     std::string res;
     for (int i = start; i < argc; ++i) {
@@ -32,63 +31,48 @@ static std::string joinArgs_(int argc, char* argv[], int start) {
     return res;
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) 
+{
     bool        serverMode = false;
     std::string configFile;
 
-    // -----------------------------------------------------------------
-    // Parsing très simple des arguments pour le BONUS
-    //
-    //   ./taskmaster_bonus --server [config.yaml]
-    //   ./taskmaster_bonus status
-    //   ./taskmaster_bonus start test
-    // -----------------------------------------------------------------
     for (int i = 1; i < argc; ++i) {
         std::string arg = argv[i];
 
         if (arg == "--server") {
             serverMode = true;
-        } else if (configFile.empty()) {
-            // premier argument non "--server" = fichier de config
+        } 
+        else if (configFile.empty()) {
             configFile = arg;
-        } else {
-            // arguments en trop : on pourrait afficher un message,
-            // mais pour l’instant on les ignore.
+        } 
+        else {
+             std::cout << "Taskmaster bonus client. Wrong Argument.\n";
         }
     }
 
     if (configFile.empty())
         configFile = "config/taskmaster.yaml";
 
-    // ==================== MODE DAEMON ====================
-    if (serverMode) {
+    if (serverMode) 
+    {
         try {
             if (!Utils::fileExists("logs"))
                 Utils::createDirectory("logs");
-
-            Logger::getInstance("logs/taskmaster_bonus.log")
-                ->setMinLevel(LogLevel::DEBUG);
-
-            LOG_INFO("=== Taskmaster BONUS daemon starting ===");
-
+            Logger::getInstance("logs/taskmaster_bonus.log")->setMinLevel(LogLevel::DEBUG);
+            LOG_INFO("Taskmaster BONUS daemon starting");
             BonusDaemon daemon(configFile, DEFAULT_SOCKET_PATH);
             daemon.run();
-
             Logger::destroyInstance();
             return 0;
-        } catch (const std::exception& e) {
-            std::cerr << "taskmaster_bonus: FATAL ERROR - "
+        } 
+        catch (const std::exception& e) {
+            std::cerr << "taskmaster_bonus: ERROR - wrong yaml"
                       << e.what() << "\n";
-            LOG_ERROR(std::string("Fatal error (bonus): ") + e.what());
+            LOG_ERROR(std::string("Error yaml (bonus): ") + e.what());
             Logger::destroyInstance();
             return 1;
         }
     }
-
-    // ==================== MODE CLIENT ====================
-    // - avec arguments : one-shot
-    //   ex: ./taskmaster_bonus status
-    // - sans arguments : shell interactif
     if (argc > 1) {
         std::string cmd = joinArgs_(argc, argv, 1);
         BonusClient client;

@@ -6,7 +6,7 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 07:22:35 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/11/24 09:31:35 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/11/25 07:41:37 by lnaidu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,9 @@
 #include <iostream>
 
 BonusClient::BonusClient() {}
+
 BonusClient::BonusClient(const BonusClient& other) { (void)other; }
+
 BonusClient& BonusClient::operator=(const BonusClient& other) {
     (void)other;
     return *this;
@@ -66,7 +68,6 @@ int BonusClient::sendCommand(const std::string& socketPath,
         return 1;
     }
 
-    // Lire ligne par ligne jusqu'à la sentinelle "."
     std::string line;
     char        ch;
     bool        gotDot = false;
@@ -85,12 +86,11 @@ int BonusClient::sendCommand(const std::string& socketPath,
                 line.push_back(ch);
             }
         } else {
-            // EOF ou erreur
             break;
         }
     }
 
     ::close(fd);
-    (void)gotDot; // pas indispensable, mais on pourrait vérifier si besoin.
+    (void)gotDot; 
     return 0;
 }

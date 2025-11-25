@@ -6,7 +6,7 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 07:25:49 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/11/24 09:16:59 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/11/25 07:47:01 by lnaidu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,59 @@
 #include "BonusShell.hpp"
 
 #include <iostream>
+#include <cstdlib>          // getenv
 #include <string>
 
+#include <readline/readline.h>
+#include <readline/history.h>
+
 BonusShell::BonusShell() {}
+
 BonusShell::BonusShell(const BonusShell& other)
     : _client(other._client) {}
+
 BonusShell& BonusShell::operator=(const BonusShell& other) {
     if (this != &other) _client = other._client;
     return *this;
 }
+
 BonusShell::~BonusShell() {}
 
-int BonusShell::run(const std::string& socketPath)
-{
-    std::cout << "Taskmaster bonus client. Type 'quit' or 'exit' to leave.\n";
+static std::string getHistoryPath_() {
+    return ".taskmaster_bonus_history";
+}
 
-    std::string line;
+
+int BonusShell::run(const std::string& socketPath) {
+    std::cout << "Taskmaster bonus client. Type 'quit' to leave.\n";
+
+    std::string historyPath = getHistoryPath_();
+    read_history(historyPath.c_str()); 
+
     while (true) {
-        std::cout << "taskmaster> " << std::flush;
-        if (!std::getline(std::cin, line)) break;
+        char* raw = readline("taskmaster_bonusctl> ");
+        if (!raw) {
+            std::cout << "\n";
+            break;
+        }
 
-        if (line == "quit" || line == "exit") break;
-        if (line.empty()) continue;
+        std::string line(raw);
+        free(raw);
 
-        _client.sendCommand(socketPath, line);
+        if (line.empty())
+            continue;
+        if (line == "quit")
+            break;
+        add_history(line.c_str());
+
+        int rc = _client.sendCommand(socketPath, line);
+        if (rc != 0) {
+            std::cerr << "taskmaster_bonus: daemon not reachable.\n"
+                         "Start it first with:\n"
+                         "  ./taskmaster_bonus --server [config.yaml]\n";
+        }
     }
-
+    write_history(historyPath.c_str());
+    std::cout << "Exiting Taskmaster client.\n";
     return 0;
 }
