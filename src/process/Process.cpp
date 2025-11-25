@@ -31,17 +31,11 @@ Process::Process(const ProgramConfig& config, int instance_num)
       _restart_count(0),
       _exit_code(0),
       _stop_time(0) {
+
     if (config.getNumprocs() == 1) {
         _instance_name = config.getName();
     } else {
-        std::ostringstream oss;
-
-        if (instance_num < 10) {
-            oss << config.getName() << "_0" << instance_num;
-        } else {
-            oss << config.getName() << "_" << instance_num;
-        }
-        _instance_name = oss.str();
+        _instance_name = config.getName() + "_" + (i < 10 ? "0" : "") + i;
     }
 }
 
