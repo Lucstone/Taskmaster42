@@ -1,6 +1,6 @@
 #include "ProcessState.hpp"
 
-const char* processStateToString(ProcessState state) {
+const char *processStateToString(ProcessState state) {
     switch (state) {
         case ProcessState::STOPPED:
             return "STOPPED";

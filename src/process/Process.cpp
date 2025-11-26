@@ -2,6 +2,7 @@
 #include "../logger/Logger.hpp"
 #include "../utils/Utils.hpp"
 #include <iostream>
+#include <iomanip>
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
@@ -22,7 +23,7 @@ Process::Process()
       _stop_time(0) {
 }
 
-Process::Process(const ProgramConfig& config, int instance_num)
+Process::Process(const ProgramConfig &config, int instance_num)
     : _config(config),
       _instance_name(""),
       _state(ProcessState::STOPPED),
@@ -34,18 +35,14 @@ Process::Process(const ProgramConfig& config, int instance_num)
     if (config.getNumprocs() == 1) {
         _instance_name = config.getName();
     } else {
-        std::ostringstream oss;
+        std::ostringstream  oss;
 
-        if (instance_num < 10) {
-            oss << config.getName() << "_0" << instance_num;
-        } else {
-            oss << config.getName() << "_" << instance_num;
-        }
+        oss << config.getName() << "_" << std::setw(2) << std::setfill('0') << instance_num;
         _instance_name = oss.str();
     }
 }
 
-Process::Process(const Process& other)
+Process::Process(const Process &other)
     : _config(other._config),
       _instance_name(other._instance_name),
       _state(other._state),
@@ -56,7 +53,7 @@ Process::Process(const Process& other)
       _stop_time(other._stop_time) {
 }
 
-Process& Process::operator=(const Process& other) {
+Process &Process::operator=(const Process &other) {
     if (this != &other) {
         _config = other._config;
         _instance_name = other._instance_name;
@@ -78,7 +75,7 @@ Process::~Process() {
 
 bool Process::start() {
     LOG_INFO("Starting process: " + _instance_name);
-    
+
     if (_state == ProcessState::RUNNING || _state == ProcessState::STARTING) {
         LOG_WARNING("Process already running: " + _instance_name);
         return false;
@@ -87,15 +84,15 @@ bool Process::start() {
     _state = ProcessState::STARTING;
     _start_time = time(NULL);
     _restart_count++;
-    
+
     bool success = forkAndExec();
-    
+
     if (success) {
         LOG_INFO("Process started: " + _instance_name + " PID: " + std::to_string(_pid));
         return true;
     } else {
         LOG_ERROR("Failed to start process: " + _instance_name);
-        
+
         if (!Utils::fileExists(_config.getCmd().substr(0, _config.getCmd().find(' ')))) {
             _state = ProcessState::BACKOFF;
         } else {
@@ -119,7 +116,7 @@ bool Process::forkAndExec() {
         close(stdin_pipe[1]);
         return false;
     }
-    
+
     if (pid == 0) {
         close(stdin_pipe[1]);
         dup2(stdin_pipe[0], STDIN_FILENO);
@@ -128,23 +125,25 @@ bool Process::forkAndExec() {
         setupChildEnvironment();
         redirectOutputs();
 
-        std::vector<std::string> tokens = Utils::split(_config.getCmd(), ' ');
+        std::vector<std::string>    tokens = Utils::split(_config.getCmd(), ' ');
+
         if (tokens.empty()) {
             _exit(1);
         }
-        
-        std::vector<char*> argv;
+
+        std::vector<char*>  argv;
+
         for (size_t i = 0; i < tokens.size(); ++i) {
             argv.push_back(const_cast<char*>(tokens[i].c_str()));
         }
         argv.push_back(NULL);
-        
+
         execvp(argv[0], &argv[0]);
-        
+
         std::cerr << "execv failed: " << strerror(errno) << "\n";
         _exit(1);
     }
-    
+
     _pid = pid;
     close(stdin_pipe[0]);
     return true;
@@ -156,10 +155,10 @@ void Process::setupChildEnvironment() {
             std::cerr << "chdir failed: " << strerror(errno) << "\n";
         }
     }
-    
+
     umask(_config.getUmask());
-    
-    const std::map<std::string, std::string>& env = _config.getEnv();
+
+    const std::map<std::string, std::string>                &env = _config.getEnv();
     for (std::map<std::string, std::string>::const_iterator it = env.begin();
          it != env.end(); ++it) {
         setenv(it->first.c_str(), it->second.c_str(), 1);
@@ -168,17 +167,17 @@ void Process::setupChildEnvironment() {
 
 void Process::redirectOutputs() {
     if (!_config.getStdoutFile().empty()) {
-        int fd = open(_config.getStdoutFile().c_str(), 
-                     O_WRONLY | O_CREAT | O_APPEND, 0644);
+        int fd = open(_config.getStdoutFile().c_str(), O_WRONLY | O_CREAT | O_APPEND, 0644);
+
         if (fd >= 0) {
             dup2(fd, STDOUT_FILENO);
             close(fd);
         }
     }
-    
+
     if (!_config.getStderrFile().empty()) {
-        int fd = open(_config.getStderrFile().c_str(), 
-                     O_WRONLY | O_CREAT | O_APPEND, 0644);
+        int fd = open(_config.getStderrFile().c_str(), O_WRONLY | O_CREAT | O_APPEND, 0644);
+
         if (fd >= 0) {
             dup2(fd, STDERR_FILENO);
             close(fd);
@@ -186,57 +185,57 @@ void Process::redirectOutputs() {
     }
 }
 
-// Check if process has run long enough to be considered started
 bool Process::hasRunLongEnough() const {
-    if (_start_time == 0) return false;
+    if (_start_time == 0) {
+        return false;
+    }
     return (time(NULL) - _start_time) >= _config.getStarttime();
 }
 
-// Send stop signal to process
 void Process::sendStopSignal() {
     if (_pid > 0) {
         int sig = _config.getStopSignalNumber();
-        LOG_INFO("Sending signal " + Utils::signalNumberToName(sig) + 
-                " to process: " + _instance_name);
+
+        LOG_INFO("Sending signal " + Utils::signalNumberToName(sig) + " to process: " + _instance_name);
         ::kill(_pid, sig);
     }
 }
 
 bool Process::stop() {
     LOG_INFO("Stopping process: " + _instance_name);
-    
+
     if (_pid <= 0 || _state == ProcessState::STOPPED) {
         return true;
     }
-    
+
     _state = ProcessState::STOPPING;
     _stop_time = time(NULL);
-    
+
     sendStopSignal();
-    
+
     return true;
 }
 
 bool Process::kill() {
     LOG_INFO("Killing process: " + _instance_name);
-    
+
     if (_pid > 0) {
         ::kill(_pid, SIGKILL);
         _state = ProcessState::STOPPED;
         _pid = -1;
     }
-    
+
     return true;
 }
 
 void Process::restart() {
     LOG_INFO("Restarting process: " + _instance_name);
-    
+
     if (_state == ProcessState::RUNNING || _state == ProcessState::STARTING) {
         stop();
         sleep(1);
     }
-    
+
     start();
 }
 
@@ -252,19 +251,17 @@ time_t Process::getUptime() const {
     return time(NULL) - _start_time;
 }
 
-// Handle process exit (called when SIGCHLD received)
 void Process::handleProcessExit(int exit_status) {
     if (WIFEXITED(exit_status)) {
         _exit_code = WEXITSTATUS(exit_status);
-        LOG_INFO("Process exited with code " + std::to_string(_exit_code) + 
-                ": " + _instance_name);
+        LOG_INFO("Process exited with code " + std::to_string(_exit_code) + ": " + _instance_name);
     } else if (WIFSIGNALED(exit_status)) {
         int sig = WTERMSIG(exit_status);
-        LOG_INFO("Process killed by signal " + Utils::signalNumberToName(sig) + 
-                ": " + _instance_name);
+
+        LOG_INFO("Process killed by signal " + Utils::signalNumberToName(sig) + ": " + _instance_name);
         _exit_code = 128 + sig;
     }
-    
+
     _pid = -1;
 
     if (_state == ProcessState::STOPPING) {
@@ -272,12 +269,10 @@ void Process::handleProcessExit(int exit_status) {
         LOG_INFO("Process stopped as requested: " + _instance_name);
         return;
     }
-    
-    // If we were in STARTING and exited too quickly, it's a failure
+
     if (_state == ProcessState::STARTING && !hasRunLongEnough()) {
         LOG_ERROR("Process exited too quickly: " + _instance_name);
-        
-        // Check if we should retry
+
         if (_restart_count <= _config.getStartretries()) {
             _state = ProcessState::BACKOFF;
         } else {
@@ -286,8 +281,7 @@ void Process::handleProcessExit(int exit_status) {
         }
         return;
     }
-    
-    // Determine if should restart based on autorestart setting
+
     if (_config.shouldRestart(_exit_code)) {
         if (_restart_count <= _config.getStartretries()) {
             _state = ProcessState::BACKOFF;
@@ -302,43 +296,36 @@ void Process::handleProcessExit(int exit_status) {
     }
 }
 
-// Update process state (called periodically)
 void Process::updateState() {
-    // STARTING -> RUNNING if starttime elapsed
     if (_state == ProcessState::STARTING && hasRunLongEnough()) {
         _state = ProcessState::RUNNING;
         _restart_count = 0;
         LOG_INFO("Process now running: " + _instance_name);
     }
 
-    // STOPPING -> SIGKILL if stoptime elapsed
     if (_state == ProcessState::STOPPING && _pid > 0) {
-        time_t elapsed = time(NULL) - _stop_time;
+        time_t  elapsed = time(NULL) - _stop_time;
+
         if (elapsed >= _config.getStoptime()) {
-            LOG_WARNING("Process stop timeout (" + std::to_string(_config.getStoptime()) + 
-                       "s), sending SIGKILL: " + _instance_name);
+            LOG_WARNING("Process stop timeout (" + std::to_string(_config.getStoptime()) + "s), sending SIGKILL: " + _instance_name);
             kill();
         }
     }
 
-    // BACKOFF -> Start retry (could add delay here if needed)
     if (_state == ProcessState::BACKOFF) {
-        // Immediate retry for now
-        // You could add: if (time_since_last_attempt > backoff_delay)
-        LOG_INFO("Retrying start (attempt " + std::to_string(_restart_count + 1) + 
-                "): " + _instance_name);
+        LOG_INFO("Retrying start (attempt " + std::to_string(_restart_count + 1) + "): " + _instance_name);
         start();
     }
 }
 
-// Get status string for display
 std::string Process::getStatusString() const {
-    std::ostringstream oss;
+    std::ostringstream  oss;
+
     oss << _instance_name << " " << processStateToString(_state);
-    
+
     if (_state == ProcessState::RUNNING && _pid > 0) {
         oss << " pid " << _pid << ", uptime " << getUptime() << "s";
     }
-    
+
     return oss.str();
 }

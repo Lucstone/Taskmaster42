@@ -2,7 +2,6 @@
 #include "../utils/Utils.hpp"
 #include <algorithm>
 
-// Default constructor
 ProgramConfig::ProgramConfig() 
     : _name(""),
       _cmd(""),
@@ -19,11 +18,10 @@ ProgramConfig::ProgramConfig()
       _stdout_file(""),
       _stderr_file(""),
       _env() {
-    _exitcodes.push_back(0); // Default expected exit code
+    _exitcodes.push_back(0);
 }
 
-// Parameterized constructor
-ProgramConfig::ProgramConfig(const std::string& name)
+ProgramConfig::ProgramConfig(const std::string &name)
     : _name(name),
       _cmd(""),
       _numprocs(1),
@@ -42,8 +40,7 @@ ProgramConfig::ProgramConfig(const std::string& name)
     _exitcodes.push_back(0);
 }
 
-// Copy constructor
-ProgramConfig::ProgramConfig(const ProgramConfig& other)
+ProgramConfig::ProgramConfig(const ProgramConfig &other)
     : _name(other._name),
       _cmd(other._cmd),
       _numprocs(other._numprocs),
@@ -61,8 +58,7 @@ ProgramConfig::ProgramConfig(const ProgramConfig& other)
       _env(other._env) {
 }
 
-// Copy assignment operator
-ProgramConfig& ProgramConfig::operator=(const ProgramConfig& other) {
+ProgramConfig &ProgramConfig::operator=(const ProgramConfig &other) {
     if (this != &other) {
         _name = other._name;
         _cmd = other._cmd;
@@ -83,12 +79,9 @@ ProgramConfig& ProgramConfig::operator=(const ProgramConfig& other) {
     return *this;
 }
 
-// Destructor
 ProgramConfig::~ProgramConfig() {
-    // Nothing to clean up (no dynamic allocation)
 }
 
-// Helper methods
 bool ProgramConfig::isExpectedExitCode(int code) const {
     return std::find(_exitcodes.begin(), _exitcodes.end(), code) != _exitcodes.end();
 }
@@ -108,7 +101,7 @@ bool ProgramConfig::shouldRestart(int exitCode) const {
     return false;
 }
 
-bool ProgramConfig::operator==(const ProgramConfig& other) const {
+bool ProgramConfig::operator==(const ProgramConfig &other) const {
     return _name == other._name &&
            _cmd == other._cmd &&
            _numprocs == other._numprocs &&
@@ -126,6 +119,6 @@ bool ProgramConfig::operator==(const ProgramConfig& other) const {
            _env == other._env;
 }
 
-bool ProgramConfig::operator!=(const ProgramConfig& other) const {
+bool ProgramConfig::operator!=(const ProgramConfig &other) const {
     return !(*this == other);
 }

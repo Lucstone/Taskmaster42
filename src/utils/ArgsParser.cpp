@@ -4,7 +4,7 @@
 #include <unistd.h>
 
 std::string findDefaultConfigFile() {
-    const char* default_paths[] = {
+    const char  *default_paths[] = {
         "taskmaster.yaml",
         "etc/taskmaster.yaml",
         "/etc/taskmaster.yaml",
@@ -21,7 +21,7 @@ std::string findDefaultConfigFile() {
     return "";
 }
 
-void printUsage(const char* program_name) {
+void printUsage(const char *program_name) {
     std::cerr << "Usage: " << program_name << " [-c config_file]\n\n";
     std::cerr << "Options:\n";
     std::cerr << "  -c FILE    Specify configuration file\n\n";
@@ -39,9 +39,9 @@ void printConfigNotFoundError() {
               << "use the -c option to specify a config file at a different path\n";
 }
 
-std::string parseArguments(int argc, char* argv[]) {
+std::string parseArguments(int argc, char *argv[]) {
     std::string config_file;
-    int opt;
+    int         opt;
 
     while ((opt = getopt(argc, argv, "c:h")) != -1) {
         switch (opt) {

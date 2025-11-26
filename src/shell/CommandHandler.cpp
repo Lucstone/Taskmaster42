@@ -9,17 +9,17 @@ CommandHandler::CommandHandler()
     : _process_mgr(NULL), _reload_requested(false), _shutdown_requested(false) {
 }
 
-CommandHandler::CommandHandler(ProcessManager* mgr)
+CommandHandler::CommandHandler(ProcessManager *mgr)
     : _process_mgr(mgr), _reload_requested(false), _shutdown_requested(false) {
 }
 
-CommandHandler::CommandHandler(const CommandHandler& other)
+CommandHandler::CommandHandler(const CommandHandler &other)
     : _process_mgr(other._process_mgr),
       _reload_requested(other._reload_requested),
       _shutdown_requested(other._shutdown_requested) {
 }
 
-CommandHandler& CommandHandler::operator=(const CommandHandler& other) {
+CommandHandler &CommandHandler::operator=(const CommandHandler &other) {
     if (this != &other) {
         _process_mgr = other._process_mgr;
         _reload_requested = other._reload_requested;
@@ -31,28 +31,22 @@ CommandHandler& CommandHandler::operator=(const CommandHandler& other) {
 CommandHandler::~CommandHandler() {
 }
 
-bool CommandHandler::execute(const std::string& cmd_line) {
-    // IMPORTANT: Update process states before executing command
-    // This ensures we have the latest status
+bool CommandHandler::execute(const std::string &cmd_line) {
     if (_process_mgr) {
-        // Handle any pending SIGCHLD
         if (SignalHandler::needsProcessCheck()) {
             _process_mgr->handleSigchld();
             SignalHandler::clearProcessCheck();
         }
-        
-        // Update process states
+
         _process_mgr->update();
     }
-    
-    std::vector<std::string> args = splitCommand(cmd_line);
-    
-    // Empty command - just return (show new prompt)
+
+    std::vector<std::string>    args = splitCommand(cmd_line);
+
     if (args.empty()) return true;
-    
+
     std::string command = args[0];
-    
-    // Dispatch to appropriate command handler
+
     if (command == "status") {
         status(args);
     } else if (command == "start") {
@@ -70,31 +64,30 @@ bool CommandHandler::execute(const std::string& cmd_line) {
     } else {
         std::cout << "*** Unknown command: " << command << "\n";
     }
-    
+
     return true;
 }
 
-void CommandHandler::status(const std::vector<std::string>& args) {
+void CommandHandler::status(const std::vector<std::string> &args) {
     if (args.size() == 1) {
-        // Show all processes
-        std::vector<ProcessStatus> statuses = _process_mgr->getAllStatus();
-        
+        std::vector<ProcessStatus>  statuses = _process_mgr->getAllStatus();
+
         for (size_t i = 0; i < statuses.size(); ++i) {
             printProcessStatus(statuses[i]);
         }
     } else {
-        // Show specific processes
         for (size_t i = 1; i < args.size(); ++i) {
             std::string name = args[i];
-            
+
             if (name == "all") {
-                // "status all" shows all processes
-                std::vector<ProcessStatus> statuses = _process_mgr->getAllStatus();
+                std::vector<ProcessStatus>  statuses = _process_mgr->getAllStatus();
+
                 for (size_t j = 0; j < statuses.size(); ++j) {
                     printProcessStatus(statuses[j]);
                 }
             } else {
-                ProcessStatus st = _process_mgr->getProcessStatus(name);
+                ProcessStatus   st = _process_mgr->getProcessStatus(name);
+
                 if (!st.exists) {
                     std::cout << name << ": ERROR (no such process)\n";
                 } else {
@@ -105,11 +98,11 @@ void CommandHandler::status(const std::vector<std::string>& args) {
     }
 }
 
-void CommandHandler::printProcessStatus(const ProcessStatus& status) {
-    std::ostringstream oss;
-    
+void CommandHandler::printProcessStatus(const ProcessStatus &status) {
+    std::ostringstream  oss;
+
     oss << status.name;
-    
+
     if (status.name.length() < 32) {
         oss << std::string(33 - status.name.length(), ' ');
     } else {
@@ -117,29 +110,26 @@ void CommandHandler::printProcessStatus(const ProcessStatus& status) {
     }
 
     oss << status.state_str;
-    
+
     if (!status.info.empty()) {
         oss << "   " << status.info;
     }
-    
+
     std::cout << oss.str() << "\n";
 }
 
-void CommandHandler::start(const std::vector<std::string>& args) {
+void CommandHandler::start(const std::vector<std::string> &args) {
     if (args.size() < 2) {
         std::cout << "Error: start requires a process name\n";
-        std::cout << "start <name>            Start a process\n";
-        std::cout << "start <name> <name>     Start multiple processes or groups\n";
-        std::cout << "start all               Start all processes\n";
         return;
     }
-    
+
     for (size_t i = 1; i < args.size(); ++i) {
         std::string name = args[i];
-        
+
         if (name == "all") {
-            // Start all processes
-            std::vector<std::string> all_programs = _process_mgr->getProgramNames();
+            std::vector<std::string>    all_programs = _process_mgr->getProgramNames();
+
             for (size_t j = 0; j < all_programs.size(); ++j) {
                 startSingleProcess(all_programs[j]);
             }
@@ -149,9 +139,9 @@ void CommandHandler::start(const std::vector<std::string>& args) {
     }
 }
 
-void CommandHandler::startSingleProcess(const std::string& name) {
+void CommandHandler::startSingleProcess(const std::string &name) {
     StartResult result = _process_mgr->startProgram(name);
-    
+
     switch (result) {
         case START_SUCCESS:
             std::cout << name << ": started\n";
@@ -171,21 +161,18 @@ void CommandHandler::startSingleProcess(const std::string& name) {
     }
 }
 
-void CommandHandler::stop(const std::vector<std::string>& args) {
+void CommandHandler::stop(const std::vector<std::string> &args) {
     if (args.size() < 2) {
         std::cout << "Error: stop requires a process name\n";
-        std::cout << "stop <name>             Stop a process\n";
-        std::cout << "stop <name> <name>      Stop multiple processes or groups\n";
-        std::cout << "stop all                Stop all processes\n";
         return;
     }
-    
+
     for (size_t i = 1; i < args.size(); ++i) {
         std::string name = args[i];
-        
+
         if (name == "all") {
-            // Stop all processes
-            std::vector<std::string> all_programs = _process_mgr->getProgramNames();
+            std::vector<std::string>    all_programs = _process_mgr->getProgramNames();
+
             for (size_t j = 0; j < all_programs.size(); ++j) {
                 stopSingleProcess(all_programs[j]);
             }
@@ -195,9 +182,9 @@ void CommandHandler::stop(const std::vector<std::string>& args) {
     }
 }
 
-void CommandHandler::stopSingleProcess(const std::string& name) {
-    StopResult result = _process_mgr->stopProgram(name);
-    
+void CommandHandler::stopSingleProcess(const std::string &name) {
+    StopResult  result = _process_mgr->stopProgram(name);
+
     switch (result) {
         case STOP_SUCCESS:
             std::cout << name << ": stopped\n";
@@ -211,22 +198,18 @@ void CommandHandler::stopSingleProcess(const std::string& name) {
     }
 }
 
-void CommandHandler::restart(const std::vector<std::string>& args) {
+void CommandHandler::restart(const std::vector<std::string> &args) {
     if (args.size() < 2) {
         std::cout << "Error: restart requires a process name\n";
-        std::cout << "restart <name>          Restart a process\n";
-        std::cout << "restart <name> <name>   Restart multiple processes or groups\n";
-        std::cout << "restart all             Restart all processes\n";
-        std::cout << "Note: restart does not reread config files. For that, see reread and update.\n";
         return;
     }
-    
+
     for (size_t i = 1; i < args.size(); ++i) {
         std::string name = args[i];
-        
+
         if (name == "all") {
-            // Restart all processes
-            std::vector<std::string> all_programs = _process_mgr->getProgramNames();
+            std::vector<std::string>    all_programs = _process_mgr->getProgramNames();
+
             for (size_t j = 0; j < all_programs.size(); ++j) {
                 restartSingleProcess(all_programs[j]);
             }
@@ -236,72 +219,64 @@ void CommandHandler::restart(const std::vector<std::string>& args) {
     }
 }
 
-void CommandHandler::restartSingleProcess(const std::string& name) {
-    RestartResult result = _process_mgr->restartProgram(name);
-    
+void CommandHandler::restartSingleProcess(const std::string &name) {
+    RestartResult   result = _process_mgr->restartProgram(name);
+
     switch (result) {
         case RESTART_SUCCESS:
-            // Success is shown in two phases by supervisor: stopped then started
-            // This is handled in ProcessManager
+            std::cout << name << ": restarted\n";
             break;
         case RESTART_NOT_RUNNING_STARTED:
-            // Process was not running, but was started
-            std::cout << name << ": ERROR (not running)\n";
+            std::cout << name << ": not running\n";
             std::cout << name << ": started\n";
             break;
         case RESTART_NO_SUCH_PROCESS:
             std::cout << name << ": ERROR (no such process)\n";
-            std::cout << name << ": ERROR (no such process)\n";
             break;
         case RESTART_SPAWN_ERROR:
-            std::cout << name << ": ERROR (not running)\n";
             std::cout << name << ": ERROR (spawn error)\n";
             break;
         case RESTART_NO_SUCH_FILE:
-            std::cout << name << ": ERROR (not running)\n";
             std::cout << name << ": ERROR (no such file)\n";
             break;
     }
 }
 
-void CommandHandler::reload(const std::vector<std::string>& args) {
+void CommandHandler::reload(const std::vector<std::string> &args) {
     if (args.size() > 1) {
         std::cout << "Error: reload accepts no arguments\n";
-        std::cout << "reload          Restart the remote supervisord.\n";
         return;
     }
-    
-    // Ask for confirmation
+
     std::cout << "Really restart the remote supervisord process y/N? ";
     std::string response;
     std::getline(std::cin, response);
-    
+
     response = Utils::trim(response);
     response = Utils::toLower(response);
-    
+
     if (response == "y" || response == "yes") {
         _reload_requested = true;
         std::cout << "Restarted supervisord\n";
     }
 }
 
-void CommandHandler::shutdown(const std::vector<std::string>& args) {
+void CommandHandler::shutdown(const std::vector<std::string> &args) {
     (void)args;
     _shutdown_requested = true;
 }
 
-void CommandHandler::help(const std::vector<std::string>& args) {
+void CommandHandler::help(const std::vector<std::string> &args) {
     if (args.size() == 1) {
-        // Show all commands
         std::cout << "\n";
         std::cout << "default commands (type help <topic>):\n";
         std::cout << "=====================================\n";
-        std::cout << "help     reload   restart   start   status   stop   quit\n";
+        std::cout << "help     reload   restart   start    \n";
+        std::cout << "status   stop     quit               \n";
         std::cout << "\n";
     } else {
-        // Show help for specific command
         std::string topic = args[1];
-        
+
         if (topic == "start") {
             std::cout << "start <name>            Start a process\n";
             std::cout << "start <name> <name>     Start multiple processes or groups\n";
@@ -332,7 +307,7 @@ void CommandHandler::help(const std::vector<std::string>& args) {
     }
 }
 
-std::vector<std::string> CommandHandler::splitCommand(const std::string& cmd_line) const {
+std::vector<std::string> CommandHandler::splitCommand(const std::string &cmd_line) const {
     return Utils::split(Utils::trim(cmd_line), ' ');
 }
 
