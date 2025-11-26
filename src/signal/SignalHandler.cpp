@@ -64,14 +64,6 @@ void SignalHandler::setup() {
         LOG_ERROR("Failed to setup SIGTERM: " + std::string(strerror(errno)));
     }
 
-    sa.sa_handler = handleSigint;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    if (sigaction(SIGINT, &sa, NULL) == -1) {
-        std::cerr << "Error: Failed to setup SIGINT: " << strerror(errno) << "\n";
-        LOG_ERROR("Failed to setup SIGINT: " + std::string(strerror(errno)));
-    }
-
     signal(SIGPIPE, SIG_IGN);
 }
 

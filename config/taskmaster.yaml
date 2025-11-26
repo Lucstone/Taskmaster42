@@ -1,6 +1,6 @@
 programs:
   test:
-    cmd: "/tmp/tm_test.sh"
+    cmd: "/bin/cat"
     numprocs: 1
     umask: 077
     workingdir: /var/tmp
@@ -9,7 +9,7 @@ programs:
     exitcodes:
       - 0
     startretries: 2
-    starttime: 10
+    starttime: 3
     stopsignal: TERM
     stoptime: 20
     stdout: /tmp/tm_stdout.log

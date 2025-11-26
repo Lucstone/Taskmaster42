@@ -224,7 +224,6 @@ void CommandHandler::restartSingleProcess(const std::string &name) {
 
     switch (result) {
         case RESTART_SUCCESS:
-            std::cout << name << ": restarted\n";
             break;
         case RESTART_NOT_RUNNING_STARTED:
             std::cout << name << ": not running\n";
