@@ -21,7 +21,7 @@ programs:
 
   # Cat program (stays running, waits for input)
   cat_demo:
-    cmd: "/bin/cat"
+    cmd: "echo hello"
     numprocs: 1
     umask: 022
     workingdir: /tmp
@@ -30,7 +30,7 @@ programs:
     exitcodes:
       - 0
     startretries: 2
-    starttime: 2
+    starttime: 0
     stopsignal: TERM
     stoptime: 5
     stdout: /tmp/cat_demo.stdout

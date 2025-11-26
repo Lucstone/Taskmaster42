@@ -6,29 +6,24 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 07:24:25 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/11/25 07:35:28 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/11/26 04:19:17 by lnaidu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BonusDaemon.hpp"
-
 #include <sstream>
 #include <iostream>
 #include <functional>
 #include <unistd.h>
 
-BonusDaemon::BonusDaemon(const std::string& config_file,
-                         const std::string& socket_path)
+BonusDaemon::BonusDaemon(const std::string& config_file, const std::string& socket_path)
     : _config_file(config_file),
       _socket_path(socket_path),
       _config_parser(config_file),
       _process_manager(),
       _command_handler(&_process_manager),
-      _server(socket_path,
-              std::bind(&BonusDaemon::handleCommand_, this, std::placeholders::_1)),
-      _running(true)
-{
-}
+      _server(socket_path, std::bind(&BonusDaemon::handleCommand_, this, std::placeholders::_1)),
+      _running(true){}
 
 BonusDaemon::BonusDaemon(const BonusDaemon& other)
     : _config_file(other._config_file),
@@ -36,11 +31,8 @@ BonusDaemon::BonusDaemon(const BonusDaemon& other)
       _config_parser(other._config_file),
       _process_manager(),
       _command_handler(&_process_manager),
-      _server(other._socket_path,
-              std::bind(&BonusDaemon::handleCommand_, this, std::placeholders::_1)),
-      _running(other._running)
-{
-}
+      _server(other._socket_path, std::bind(&BonusDaemon::handleCommand_, this, std::placeholders::_1)),
+      _running(other._running){}
 
 BonusDaemon& BonusDaemon::operator=(const BonusDaemon& other)
 {
@@ -50,8 +42,7 @@ BonusDaemon& BonusDaemon::operator=(const BonusDaemon& other)
         _config_parser = ConfigParser(other._config_file);
         _process_manager = ProcessManager();
         _command_handler = CommandHandler(&_process_manager);
-        _server = IPCServer(_socket_path,
-                            std::bind(&BonusDaemon::handleCommand_, this, std::placeholders::_1));
+        _server = IPCServer(_socket_path, std::bind(&BonusDaemon::handleCommand_, this, std::placeholders::_1));
         _running = other._running;
     }
     return *this;
@@ -93,7 +84,6 @@ std::vector<std::string> BonusDaemon::handleCommand_(const std::string& line) {
         return out;
     }
 
-    //on capture stdout/stderr et on laisse CommandHandler bosser
     std::stringstream buffer;
     std::streambuf* oldCout = std::cout.rdbuf(buffer.rdbuf());
     std::streambuf* oldCerr = std::cerr.rdbuf(buffer.rdbuf());
@@ -103,7 +93,6 @@ std::vector<std::string> BonusDaemon::handleCommand_(const std::string& line) {
     std::cout.rdbuf(oldCout);
     std::cerr.rdbuf(oldCerr);
 
-    //Gestion éventuelle des flags du CommandHandler (sauf reload, déjà géré)
     if (_command_handler.needsReload()) {
         _command_handler.clearReload();
         reloadConfiguration();
@@ -114,7 +103,6 @@ std::vector<std::string> BonusDaemon::handleCommand_(const std::string& line) {
         shutdown();
     }
 
-    // Récupérer ce que la commande a écrit
     std::vector<std::string> out;
     std::string tmp;
     while (std::getline(buffer, tmp)) {

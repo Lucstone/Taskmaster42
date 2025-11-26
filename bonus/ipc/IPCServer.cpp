@@ -6,12 +6,11 @@
 /*   By: lnaidu <lnaidu@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/06 04:18:37 by lnaidu            #+#    #+#             */
-/*   Updated: 2025/11/25 07:40:30 by lnaidu           ###   ########.fr       */
+/*   Updated: 2025/11/26 04:21:52 by lnaidu           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IPCServer.hpp"
-
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/stat.h>
@@ -35,7 +34,7 @@ IPCServer::IPCServer(const std::string& sockPath, Handler h)
 
 IPCServer::IPCServer(const IPCServer& other)
 : _sockPath(other._sockPath), _listenFd(-1), _handler(other._handler) {
-    setupSocket_(); //new socket pas de dup
+    setupSocket_();
 }
 
 IPCServer& IPCServer::operator=(const IPCServer& other) {
@@ -50,13 +49,14 @@ IPCServer& IPCServer::operator=(const IPCServer& other) {
 }
 
 IPCServer::~IPCServer() {
-    cleanup_(); //supprime socket et nettoie le fichier
+    cleanup_(); 
 }
 
 void IPCServer::setupSocket_() {
-    ::unlink(_sockPath.c_str()); //suprime socket sans cleanup
 
+    ::unlink(_sockPath.c_str()); 
     _listenFd = ::socket(AF_UNIX, SOCK_STREAM, 0);
+
     if (_listenFd < 0)
         throw std::runtime_error("IPCServer: socket() failed");
 
@@ -72,7 +72,6 @@ void IPCServer::setupSocket_() {
         throw std::runtime_error(std::string("IPCServer: bind() failed: ") + std::strerror(e));
     }
 
-    // Restriction droits: seul l'utilisateur courant
     ::chmod(_sockPath.c_str(), 0600);
 
     if (::listen(_listenFd, 16) < 0) {
@@ -100,6 +99,7 @@ void IPCServer::pollOnce() {
     sockaddr_un cli;
     socklen_t   len = sizeof(cli);
     int         fd  = ::accept(_listenFd, (sockaddr*)&cli, &len);
+
     if (fd < 0) {
         return;
     }
@@ -126,7 +126,7 @@ void IPCServer::pollOnce() {
         out = _handler(line);
     } catch (...) {
         out.clear();
-        out.push_back("ERR internal handler error");
+        out.push_back("ERROR handler error");
     }
 
     for (std::vector<std::string>::const_iterator it = out.begin();
@@ -135,6 +135,5 @@ void IPCServer::pollOnce() {
         (void)::write(fd, "\n", 1);
     }
     (void)::write(fd, ".\n", 2);
-
     ::close(fd);
 }
